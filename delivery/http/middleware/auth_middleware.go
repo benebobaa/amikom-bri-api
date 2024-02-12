@@ -1,0 +1,50 @@
+package middleware
+
+import (
+	"errors"
+	"github.com/benebobaa/amikom-bri-api/util"
+	"github.com/benebobaa/amikom-bri-api/util/token"
+
+	"github.com/gofiber/fiber/v2"
+	"net/http"
+	"strings"
+)
+
+const (
+	authorizationHeaderKey  = "Authorization"
+	AuthorizationPayloadKey = "authorization_payload"
+)
+
+func AuthMiddleware(tokenMaker token.Maker, viperConfig util.Config) fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		authorizationHeaderKey := ctx.Get(authorizationHeaderKey)
+
+		fields := strings.Fields(authorizationHeaderKey)
+		if len(fields) < 2 {
+			err := errors.New("invalid authorization header format")
+			res, code := util.ConstructBaseResponse(
+				util.BaseResponse{
+					Code:   http.StatusUnauthorized,
+					Status: err.Error(),
+				},
+			)
+			return ctx.Status(code).JSON(res)
+		}
+
+		accessToken := fields[1]
+
+		payload, err := tokenMaker.VerifyToken(accessToken, viperConfig.TokenAccessSymetricKey)
+		if err != nil {
+			res, code := util.ConstructBaseResponse(
+				util.BaseResponse{
+					Code:   http.StatusUnauthorized,
+					Status: err.Error(),
+				},
+			)
+			return ctx.Status(code).JSON(res)
+		}
+
+		ctx.Locals(AuthorizationPayloadKey, payload)
+		return ctx.Next()
+	}
+}
