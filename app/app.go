@@ -20,7 +20,7 @@ type BootstrapConfig struct {
 	Validate    *validator.Validate
 	TokenMaker  token.Maker
 	ViperConfig util.Config
-	EmailSender mail.EmailSender
+	TitanMail   mail.EmailSender
 }
 
 func Bootstrap(config *BootstrapConfig) {
@@ -32,11 +32,12 @@ func Bootstrap(config *BootstrapConfig) {
 	accountRepository := repository.NewAccountRepository()
 
 	// Setup usecases
-	userUsecase := usecase.NewUserUsecase(config.DB, config.Validate, userRepository, emailRepository, accountRepository)
+	userUsecase := usecase.NewUserUsecase(config.DB, config.Validate, config.TitanMail, userRepository, emailRepository, accountRepository)
 	loginUsecase := usecase.NewLoginUseCase(config.DB, config.Validate, config.TokenMaker, config.ViperConfig, userRepository, sessionRepository)
 
 	// Setup controller
 	userController := controller.NewUserController(userUsecase, loginUsecase)
+	webController := controller.NewWebController(userUsecase)
 
 	// Setup middleware
 	authMiddleware := middleware.AuthMiddleware(config.TokenMaker, config.ViperConfig)
@@ -45,6 +46,7 @@ func Bootstrap(config *BootstrapConfig) {
 		App:            config.App,
 		AuthMiddleware: authMiddleware,
 		UserController: userController,
+		WebController:  webController,
 	}
 
 	routeConfig.Setup()

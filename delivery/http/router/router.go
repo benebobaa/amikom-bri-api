@@ -9,6 +9,7 @@ type RouteConfig struct {
 	App            *fiber.App
 	AuthMiddleware fiber.Handler
 	UserController controller.UserController
+	WebController  controller.WebController
 }
 
 func (c *RouteConfig) Setup() {
@@ -25,7 +26,10 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Post("/api/v1/auth/_login", c.UserController.Login)
 
 	// Verify Email
-	c.App.Get("/api/v1/auth/_verify-email", c.UserController.VerifyEmail)
+	c.App.Get("/api/v1/auth/_verify-email", c.WebController.VerifyEmail)
+
+	// Forgot Password
+	c.App.Get("/api/v1/users/_reset-password", c.WebController.ResetPasswordForm)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {

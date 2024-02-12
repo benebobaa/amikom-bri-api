@@ -1,12 +1,18 @@
 package main
 
 import (
+	"embed"
 	"github.com/benebobaa/amikom-bri-api/app"
 	"github.com/benebobaa/amikom-bri-api/util"
 	"github.com/benebobaa/amikom-bri-api/util/mail"
 	"github.com/benebobaa/amikom-bri-api/util/token"
+	"github.com/gofiber/template/html/v2"
 	"log"
+	httpLib "net/http"
 )
+
+//go:embed resource/*
+var resourcefs embed.FS
 
 func main() {
 	viperConfig, err := util.LoadConfig(".")
@@ -19,10 +25,12 @@ func main() {
 		log.Fatalf("Failed to create JWT Maker: %v", err)
 	}
 
-	mailSender := mail.NewGmailSender(viperConfig.EmailName, viperConfig.EmailSender, viperConfig.EmailPassword)
+	engine := html.NewFileSystem(httpLib.FS(resourcefs), ".html")
+
+	mailSender := mail.NewTitanSender(viperConfig.EmailName, viperConfig.EmailSender, viperConfig.EmailPassword)
 	db := app.NewDatabaseConnection(viperConfig.DBDsn)
 	validate := app.NewValidator()
-	fiber := app.NewFiber(viperConfig)
+	fiber := app.NewFiber(viperConfig, engine)
 
 	app.Bootstrap(&app.BootstrapConfig{
 		DB:          db,
@@ -30,7 +38,7 @@ func main() {
 		Validate:    validate,
 		TokenMaker:  tokenMaker,
 		ViperConfig: viperConfig,
-		EmailSender: mailSender,
+		TitanMail:   mailSender,
 	})
 
 	err = fiber.Listen(":" + viperConfig.PortApp)

@@ -26,7 +26,7 @@ CREATE TABLE "accounts" (
 -- Verify Emails Table
 CREATE TABLE "verify_emails" (
                                 id bigserial PRIMARY KEY,
-                                user_id UUID REFERENCES "users"(id),
+                                user_id UUID REFERENCES "users"(id) ON DELETE CASCADE,
                                 email varchar NOT NULL,
                                 secret_code varchar NOT NULL,
                                 is_used bool NOT NULL DEFAULT false,

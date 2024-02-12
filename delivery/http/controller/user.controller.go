@@ -12,11 +12,11 @@ import (
 
 type UserController interface {
 	Register(ctx *fiber.Ctx) error
-	VerifyEmail(ctx *fiber.Ctx) error
 	Login(ctx *fiber.Ctx) error
 	Delete(ctx *fiber.Ctx) error
 	Profile(ctx *fiber.Ctx) error
 	FindAll(ctx *fiber.Ctx) error
+	ForgotPassword(ctx *fiber.Ctx) error
 }
 
 type userControllerImpl struct {
@@ -33,6 +33,7 @@ func NewUserController(userUsecase usecase.UserUsecase, useCase usecase.LoginUse
 
 func (u *userControllerImpl) Register(ctx *fiber.Ctx) error {
 	requestBody := new(request.UserRegisterRequest)
+	baseUrl := ctx.BaseURL()
 	err := ctx.BodyParser(requestBody)
 
 	if err != nil {
@@ -45,7 +46,7 @@ func (u *userControllerImpl) Register(ctx *fiber.Ctx) error {
 		return ctx.Status(statusCode).JSON(resp)
 	}
 
-	result, err := u.userUsecase.RegisterNewUser(ctx.UserContext(), requestBody)
+	result, err := u.userUsecase.RegisterNewUser(ctx.UserContext(), requestBody, baseUrl)
 
 	if err != nil {
 		if errors.Is(err, util.UsernameAlreadyExists) {
@@ -80,61 +81,6 @@ func (u *userControllerImpl) Register(ctx *fiber.Ctx) error {
 	resp, statusCode := util.ConstructBaseResponse(
 		util.BaseResponse{
 			Code:   fiber.StatusCreated,
-			Status: "Success",
-			Data:   result,
-		},
-	)
-
-	return ctx.Status(statusCode).JSON(resp)
-}
-
-func (u *userControllerImpl) VerifyEmail(ctx *fiber.Ctx) error {
-
-	secretCode := ctx.Query("secret", "")
-
-	result, err := u.userUsecase.VerifyUserEmail(ctx.UserContext(), secretCode)
-
-	if err != nil {
-		if errors.Is(err, util.EmailVerifyExpired) {
-			resp, statusCode := util.ConstructBaseResponse(
-				util.BaseResponse{
-					Code:   fiber.StatusUnauthorized,
-					Status: err.Error(),
-				},
-			)
-			return ctx.Status(statusCode).JSON(resp)
-		}
-		if errors.Is(err, util.EmailVerifyCodeNotValid) {
-			resp, statusCode := util.ConstructBaseResponse(
-				util.BaseResponse{
-					Code:   fiber.StatusUnauthorized,
-					Status: err.Error(),
-				},
-			)
-			return ctx.Status(statusCode).JSON(resp)
-		}
-		if errors.Is(err, util.EmailVerifyAlreadyUsed) {
-			resp, statusCode := util.ConstructBaseResponse(
-				util.BaseResponse{
-					Code:   fiber.StatusBadRequest,
-					Status: err.Error(),
-				},
-			)
-			return ctx.Status(statusCode).JSON(resp)
-		}
-
-		resp, statusCode := util.ConstructBaseResponse(
-			util.BaseResponse{
-				Code:   fiber.StatusBadRequest,
-				Status: err.Error(),
-			},
-		)
-		return ctx.Status(statusCode).JSON(resp)
-	}
-
-	resp, statusCode := util.ConstructBaseResponse(
-		util.BaseResponse{
-			Code:   fiber.StatusOK,
 			Status: "Success",
 			Data:   result,
 		},
@@ -319,4 +265,49 @@ func (u *userControllerImpl) FindAll(ctx *fiber.Ctx) error {
 	)
 
 	return ctx.Status(statusCode).JSON(resp)
+}
+
+func (u *userControllerImpl) ForgotPassword(ctx *fiber.Ctx) error {
+	//request := &request.ForgotPasswordRequest{}
+	//err := ctx.BodyParser(request)
+	//
+	//if err != nil {
+	//	resp, statusCode := util.ConstructBaseResponse(
+	//		util.BaseResponse{
+	//			Code:   fiber.StatusBadRequest,
+	//			Status: err.Error(),
+	//		},
+	//	)
+	//	return ctx.Status(statusCode).JSON(resp)
+	//}
+	//
+	//err = u.userUsecase.ForgotPassword(ctx.UserContext(), request)
+	//
+	//if err != nil {
+	//	if errors.Is(err, util.EmailNotFound) {
+	//		resp, statusCode := util.ConstructBaseResponse(
+	//			util.BaseResponse{
+	//				Code:   fiber.StatusNotFound,
+	//				Status: err.Error(),
+	//			},
+	//		)
+	//		return ctx.Status(statusCode).JSON(resp)
+	//	}
+	//	resp, statusCode := util.ConstructBaseResponse(
+	//		util.BaseResponse{
+	//			Code:   fiber.StatusBadRequest,
+	//			Status: err.Error(),
+	//		},
+	//	)
+	//	return ctx.Status(statusCode).JSON(resp)
+	//}
+	//
+	//resp, statusCode := util.ConstructBaseResponse(
+	//	util.BaseResponse{
+	//		Code:   fiber.StatusOK,
+	//		Status: "Success",
+	//	},
+	//)
+
+	return nil
 }

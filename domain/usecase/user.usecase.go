@@ -8,7 +8,7 @@ import (
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
 	"github.com/benebobaa/amikom-bri-api/domain/repository"
 	"github.com/benebobaa/amikom-bri-api/util"
-	"github.com/benebobaa/amikom-bri-api/util/token"
+	"github.com/benebobaa/amikom-bri-api/util/mail"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 	"log"
@@ -17,7 +17,7 @@ import (
 )
 
 type UserUsecase interface {
-	RegisterNewUser(ctx context.Context, requestData *request.UserRegisterRequest) (*response.UserResponse, error)
+	RegisterNewUser(ctx context.Context, requestData *request.UserRegisterRequest, baseUrl string) (*response.UserResponse, error)
 	VerifyUserEmail(ctx context.Context, secretCode string) (*response.EmailVerifyResponse, error)
 	SoftDeleteUser(ctx context.Context, requestUsername, payloadUsername string) error
 	ProfileUser(ctx context.Context, userID string) (*response.UserProfileResponse, error)
@@ -28,17 +28,18 @@ type userUsecaseImpl struct {
 	DB                *gorm.DB
 	Validate          *validator.Validate
 	ViperConfig       util.Config
-	TokenMaker        token.Maker
+	TitanMail         mail.EmailSender
 	UserRepository    repository.UserRepository
 	EmailRepository   repository.EmailRepository
 	AccountRepository repository.AccountRepository
 }
 
-func NewUserUsecase(db *gorm.DB, validate *validator.Validate, userRepository repository.UserRepository,
+func NewUserUsecase(db *gorm.DB, validate *validator.Validate, titanMail mail.EmailSender, userRepository repository.UserRepository,
 	emailRepository repository.EmailRepository, accountRepository repository.AccountRepository) UserUsecase {
 	return &userUsecaseImpl{
 		DB:                db,
 		Validate:          validate,
+		TitanMail:         titanMail,
 		UserRepository:    userRepository,
 		EmailRepository:   emailRepository,
 		AccountRepository: accountRepository,
@@ -46,7 +47,7 @@ func NewUserUsecase(db *gorm.DB, validate *validator.Validate, userRepository re
 
 }
 
-func (u *userUsecaseImpl) RegisterNewUser(ctx context.Context, requestData *request.UserRegisterRequest) (*response.UserResponse, error) {
+func (u *userUsecaseImpl) RegisterNewUser(ctx context.Context, requestData *request.UserRegisterRequest, baseUrl string) (*response.UserResponse, error) {
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -101,6 +102,15 @@ func (u *userUsecaseImpl) RegisterNewUser(ctx context.Context, requestData *requ
 		log.Printf("Failed commit db transaction : %+v", err)
 		return nil, err
 	}
+
+	go func() {
+		verifLink := baseUrl + "/api/v1/auth/_verify-email?secret=" + requestEmail.SecretCode
+		subject, content, toEmail := mail.GetSenderParamEmailVerification(requestEmail.Email, verifLink)
+		err := u.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
+		if err != nil {
+			log.Printf("Failed send email : %+v", err)
+		}
+	}()
 
 	return requestUserEntity.ToUserResponse(), nil
 }
