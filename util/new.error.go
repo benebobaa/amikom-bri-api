@@ -11,4 +11,8 @@ var (
 	EmailVerifyAlreadyUsed  = errors.New("Email verify already used")
 	EmailVerifyExpired      = errors.New("Email verify expired")
 	EmailVerifyCodeNotValid = errors.New("Email verify code not valid")
+	UsernameNotFound        = errors.New("Username not found")
+	UnauthorizedDeleteUser  = errors.New("Unauthorized delete user")
+	AccountAlreadyExists    = errors.New("Account already exists")
+	UserNotFound            = errors.New("User not found")
 )

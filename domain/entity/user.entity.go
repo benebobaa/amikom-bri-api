@@ -2,18 +2,21 @@ package entity
 
 import (
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
+	"gorm.io/gorm"
 	"time"
 )
 
 type User struct {
-	Username        string    `gorm:"column:username;primaryKey"`
-	Email           string    `gorm:"column:email"`
-	FullName        string    `gorm:"column:full_name"`
-	HashedPassword  string    `gorm:"column:hashed_password"`
-	IsEmailVerified bool      `gorm:"column:is_email_verified"`
-	CreatedAt       time.Time `gorm:"column:created_at"`
-	UpdatedAt       time.Time `gorm:"column:updated_at"`
-	DeletedAt       time.Time `gorm:"column:deleted_at"`
+	ID              string         `gorm:"column:id;primaryKey;type:uuid;default:uuid_generate_v4()"`
+	Username        string         `gorm:"column:username;"`
+	Email           string         `gorm:"column:email"`
+	FullName        string         `gorm:"column:full_name"`
+	HashedPassword  string         `gorm:"column:hashed_password"`
+	IsEmailVerified bool           `gorm:"column:is_email_verified"`
+	Account         Account        `gorm:"foreignKey:UserID;references:ID"`
+	CreatedAt       time.Time      `gorm:"column:created_at"`
+	UpdatedAt       time.Time      `gorm:"column:updated_at"`
+	DeletedAt       gorm.DeletedAt `gorm:"column:deleted_at;index"`
 }
 
 func (u *User) TableName() string {
@@ -26,6 +29,7 @@ func (u *User) ToUserResponse() *response.UserResponse {
 		Email:           u.Email,
 		FullName:        u.FullName,
 		IsEmailVerified: u.IsEmailVerified,
+		Account:         u.Account.ToAccountResponse(),
 		CreatedAt:       u.CreatedAt,
 	}
 }
@@ -34,5 +38,26 @@ func (u *User) ToLoginResponseWithToken(sessionResp *response.SessionsResponse) 
 	return &response.LoginResponse{
 		Token: sessionResp,
 		User:  u.ToUserResponse(),
+	}
+}
+
+func (u *User) ToUserProfileResponse() *response.UserProfileResponse {
+	return &response.UserProfileResponse{
+		Username:        u.Username,
+		Email:           u.Email,
+		FullName:        u.FullName,
+		IsEmailVerified: u.IsEmailVerified,
+		Account:         u.Account.ToAccountResponse(),
+	}
+}
+
+func ToUserResponses(users []User, pagingMetadata *response.PostPageMetaData) *response.UserResponses {
+	var userResponses []response.UserResponse
+	for _, user := range users {
+		userResponses = append(userResponses, *user.ToUserResponse())
+	}
+	return &response.UserResponses{
+		Users:  userResponses,
+		Paging: pagingMetadata,
 	}
 }

@@ -7,6 +7,7 @@ import (
 
 type SessionRequest struct {
 	ID           string    `json:"id"`
+	UserID       string    `json:"user_id"`
 	Username     string    `json:"username"`
 	RefreshToken string    `json:"refresh_token"`
 	UserAgent    string    `json:"user_agent"`
@@ -19,7 +20,7 @@ type SessionRequest struct {
 func (r *SessionRequest) ToEntity() *entity.Session {
 	return &entity.Session{
 		ID:           r.ID,
-		Username:     r.Username,
+		UserID:       r.UserID,
 		RefreshToken: r.RefreshToken,
 		UserAgent:    r.UserAgent,
 		ClientIP:     r.ClientIP,

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/benebobaa/amikom-bri-api/util"
 	"github.com/benebobaa/amikom-bri-api/util/token"
-
 	"github.com/gofiber/fiber/v2"
 	"net/http"
 	"strings"
@@ -18,7 +17,6 @@ const (
 func AuthMiddleware(tokenMaker token.Maker, viperConfig util.Config) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		authorizationHeaderKey := ctx.Get(authorizationHeaderKey)
-
 		fields := strings.Fields(authorizationHeaderKey)
 		if len(fields) < 2 {
 			err := errors.New("invalid authorization header format")

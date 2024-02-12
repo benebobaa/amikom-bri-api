@@ -6,6 +6,7 @@ import (
 )
 
 type EmailRequest struct {
+	UserID     string    `json:"user_id" validate:"required"`
 	Username   string    `json:"username" validate:"required"`
 	Email      string    `json:"email" validate:"required,email"`
 	SecretCode string    `json:"secret_code" validate:"required"`
@@ -14,7 +15,7 @@ type EmailRequest struct {
 
 func (e *EmailRequest) ToEntity() *entity.Email {
 	return &entity.Email{
-		Username:   e.Username,
+		UserID:     e.UserID,
 		Email:      e.Email,
 		SecretCode: e.SecretCode,
 		ExpiredAt:  e.ExpiredAt,

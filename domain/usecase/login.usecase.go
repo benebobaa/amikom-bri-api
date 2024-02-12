@@ -73,6 +73,7 @@ func (l *loginUseCaseImpl) LoginUser(ctx context.Context, requestData *request.L
 	}
 
 	accessToken, accessPayload, err := l.TokenMaker.CreateToken(token2.UserPayload{
+		UserID:   resultUser.ID,
 		Username: resultUser.Username,
 	}, l.ViperConfig.TokenAccessSymetricKey, l.ViperConfig.TokenAccessDuration)
 
@@ -82,6 +83,7 @@ func (l *loginUseCaseImpl) LoginUser(ctx context.Context, requestData *request.L
 	}
 
 	refreshToken, refreshPayload, err := l.TokenMaker.CreateToken(token2.UserPayload{
+		UserID:   resultUser.ID,
 		Username: resultUser.Username,
 	}, l.ViperConfig.TokenRefreshSymetricKey, l.ViperConfig.RefreshTokenDuration)
 
@@ -92,6 +94,7 @@ func (l *loginUseCaseImpl) LoginUser(ctx context.Context, requestData *request.L
 
 	sessionRequest := &request.SessionRequest{
 		ID:           refreshPayload.ID.String(),
+		UserID:       resultUser.ID,
 		Username:     resultUser.Username,
 		RefreshToken: refreshToken,
 		UserAgent:    userAgent,

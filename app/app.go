@@ -29,9 +29,10 @@ func Bootstrap(config *BootstrapConfig) {
 	userRepository := repository.NewUserRepository()
 	emailRepository := repository.NewEmailRepository()
 	sessionRepository := repository.NewSessionRepository()
+	accountRepository := repository.NewAccountRepository()
 
 	// Setup usecases
-	userUsecase := usecase.NewUserUsecase(config.DB, config.Validate, userRepository, emailRepository)
+	userUsecase := usecase.NewUserUsecase(config.DB, config.Validate, userRepository, emailRepository, accountRepository)
 	loginUsecase := usecase.NewLoginUseCase(config.DB, config.Validate, config.TokenMaker, config.ViperConfig, userRepository, sessionRepository)
 
 	// Setup controller

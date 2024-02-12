@@ -31,4 +31,9 @@ func (c *RouteConfig) SetupGuestRoute() {
 func (c *RouteConfig) SetupAuthRoute() {
 	c.App.Use(c.AuthMiddleware)
 
+	// User
+	c.App.Delete("/api/v1/users/:username", c.UserController.Delete)
+	c.App.Get("/api/v1/users/profile", c.UserController.Profile)
+	c.App.Get("/api/v1/users", c.UserController.FindAll)
+
 }
