@@ -20,14 +20,16 @@ type UserController interface {
 }
 
 type userControllerImpl struct {
-	userUsecase  usecase.UserUsecase
-	loginUsecase usecase.LoginUseCase
+	userUsecase           usecase.UserUsecase
+	loginUsecase          usecase.LoginUseCase
+	forgotPasswordUsecase usecase.ForgotPasswordUsecase
 }
 
-func NewUserController(userUsecase usecase.UserUsecase, useCase usecase.LoginUseCase) UserController {
+func NewUserController(userUsecase usecase.UserUsecase, useCase usecase.LoginUseCase, passwordUsecase usecase.ForgotPasswordUsecase) UserController {
 	return &userControllerImpl{
-		userUsecase:  userUsecase,
-		loginUsecase: useCase,
+		userUsecase:           userUsecase,
+		loginUsecase:          useCase,
+		forgotPasswordUsecase: passwordUsecase,
 	}
 }
 
@@ -161,7 +163,7 @@ func (u *userControllerImpl) Delete(ctx *fiber.Ctx) error {
 	username := ctx.Params("username")
 	authPayload := ctx.Locals(middleware.AuthorizationPayloadKey).(*token.Payload)
 
-	err := u.userUsecase.SoftDeleteUser(ctx.UserContext(), username, authPayload.Username)
+	err := u.userUsecase.DeleteUser(ctx.UserContext(), username, authPayload.Username)
 
 	if err != nil {
 		if errors.Is(err, util.UsernameNotFound) {
@@ -268,46 +270,67 @@ func (u *userControllerImpl) FindAll(ctx *fiber.Ctx) error {
 }
 
 func (u *userControllerImpl) ForgotPassword(ctx *fiber.Ctx) error {
-	//request := &request.ForgotPasswordRequest{}
-	//err := ctx.BodyParser(request)
-	//
-	//if err != nil {
-	//	resp, statusCode := util.ConstructBaseResponse(
-	//		util.BaseResponse{
-	//			Code:   fiber.StatusBadRequest,
-	//			Status: err.Error(),
-	//		},
-	//	)
-	//	return ctx.Status(statusCode).JSON(resp)
-	//}
-	//
-	//err = u.userUsecase.ForgotPassword(ctx.UserContext(), request)
-	//
-	//if err != nil {
-	//	if errors.Is(err, util.EmailNotFound) {
-	//		resp, statusCode := util.ConstructBaseResponse(
-	//			util.BaseResponse{
-	//				Code:   fiber.StatusNotFound,
-	//				Status: err.Error(),
-	//			},
-	//		)
-	//		return ctx.Status(statusCode).JSON(resp)
-	//	}
-	//	resp, statusCode := util.ConstructBaseResponse(
-	//		util.BaseResponse{
-	//			Code:   fiber.StatusBadRequest,
-	//			Status: err.Error(),
-	//		},
-	//	)
-	//	return ctx.Status(statusCode).JSON(resp)
-	//}
-	//
-	//resp, statusCode := util.ConstructBaseResponse(
-	//	util.BaseResponse{
-	//		Code:   fiber.StatusOK,
-	//		Status: "Success",
-	//	},
-	//)
+	requestBody := new(request.ForgotPasswordRequest)
+	baseUrl := ctx.BaseURL()
 
-	return nil
+	err := ctx.BodyParser(requestBody)
+
+	if err != nil {
+		resp, statusCode := util.ConstructBaseResponse(
+			util.BaseResponse{
+				Code:   fiber.StatusBadRequest,
+				Status: err.Error(),
+			},
+		)
+		return ctx.Status(statusCode).JSON(resp)
+	}
+
+	err = u.forgotPasswordUsecase.ForgotPasswordRequest(ctx.UserContext(), requestBody, baseUrl)
+
+	if err != nil {
+		if errors.Is(err, util.UsernameNotExist) {
+			resp, statusCode := util.ConstructBaseResponse(
+				util.BaseResponse{
+					Code:   fiber.StatusNotFound,
+					Status: err.Error(),
+				},
+			)
+			return ctx.Status(statusCode).JSON(resp)
+		}
+		if errors.Is(err, util.EmailNotExists) {
+			resp, statusCode := util.ConstructBaseResponse(
+				util.BaseResponse{
+					Code:   fiber.StatusNotFound,
+					Status: err.Error(),
+				},
+			)
+			return ctx.Status(statusCode).JSON(resp)
+		}
+
+		if errors.Is(err, util.UsernameAndEmailNotMatch) {
+			resp, statusCode := util.ConstructBaseResponse(
+				util.BaseResponse{
+					Code:   fiber.StatusBadRequest,
+					Status: err.Error(),
+				},
+			)
+			return ctx.Status(statusCode).JSON(resp)
+		}
+		resp, statusCode := util.ConstructBaseResponse(
+			util.BaseResponse{
+				Code:   fiber.StatusBadRequest,
+				Status: err.Error(),
+			},
+		)
+		return ctx.Status(statusCode).JSON(resp)
+	}
+
+	resp, statusCode := util.ConstructBaseResponse(
+		util.BaseResponse{
+			Code:   fiber.StatusOK,
+			Status: "Success",
+		},
+	)
+
+	return ctx.Status(statusCode).JSON(resp)
 }

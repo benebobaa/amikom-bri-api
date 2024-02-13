@@ -25,7 +25,7 @@ func NewTitanSender(name string, fromEmailAddress string, fromEmailPassword stri
 
 func (sender *TitanSender) SendEmail(subject string, content string, to []string, cc []string, bcc []string, attachFiles []string) error {
 	m := mail.NewMessage()
-	m.SetHeader("From", sender.fromEmailAddress)
+	m.SetHeader("From", sender.name+"<"+sender.fromEmailAddress+">")
 	m.SetHeader("To", to...)
 	m.SetHeader("Cc", cc...)
 	m.SetHeader("Bcc", bcc...)

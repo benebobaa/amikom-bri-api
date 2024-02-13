@@ -11,7 +11,7 @@ import (
 type UserRepository interface {
 	UserCreate(tx *gorm.DB, value *entity.User) error
 	FindUsernameIsExists(tx *gorm.DB, username string) (*entity.User, bool, error)
-	FindByEmail(tx *gorm.DB, email string) (*entity.User, error)
+	FindByEmailVerified(tx *gorm.DB, email string) (*entity.User, error)
 	FindByUsernameOrEmail(tx *gorm.DB, value *entity.User) (*entity.User, error)
 	UpdateUser(tx *gorm.DB, value *entity.User) error
 	DeleteUser(tx *gorm.DB, value *entity.User) error
@@ -56,10 +56,10 @@ func (u *userRepositoryImpl) FindUsernameIsExists(tx *gorm.DB, username string) 
 	return &value, false, nil
 }
 
-func (u *userRepositoryImpl) FindByEmail(tx *gorm.DB, email string) (*entity.User, error) {
+func (u *userRepositoryImpl) FindByEmailVerified(tx *gorm.DB, email string) (*entity.User, error) {
 	var value entity.User
 
-	result := tx.Where("email = ?", email).First(&value)
+	result := tx.Where("email = ?", email).Where("is_email_verified = true").First(&value)
 
 	if result.Error != nil {
 		log.Println(fmt.Sprintf("Error when find user with email : %v", result.Error))

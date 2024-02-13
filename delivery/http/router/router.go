@@ -29,7 +29,13 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Get("/api/v1/auth/_verify-email", c.WebController.VerifyEmail)
 
 	// Forgot Password
-	c.App.Get("/api/v1/users/_reset-password", c.WebController.ResetPasswordForm)
+	c.App.Post("/api/v1/auth/_forgot-password", c.UserController.ForgotPassword)
+
+	c.App.Get("/users/reset-password", c.WebController.ResetPasswordForm)
+	c.App.Post("/users/reset-password-submit", c.WebController.ResetPasswordSubmit)
+
+	c.App.Get("/users/reset-password-success", c.WebController.ResetPasswordSuccess)
+	//c.App.Get("/_test", c.WebController.Test)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {

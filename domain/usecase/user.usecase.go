@@ -9,6 +9,7 @@ import (
 	"github.com/benebobaa/amikom-bri-api/domain/repository"
 	"github.com/benebobaa/amikom-bri-api/util"
 	"github.com/benebobaa/amikom-bri-api/util/mail"
+	"github.com/benebobaa/amikom-bri-api/util/token"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 	"log"
@@ -19,7 +20,7 @@ import (
 type UserUsecase interface {
 	RegisterNewUser(ctx context.Context, requestData *request.UserRegisterRequest, baseUrl string) (*response.UserResponse, error)
 	VerifyUserEmail(ctx context.Context, secretCode string) (*response.EmailVerifyResponse, error)
-	SoftDeleteUser(ctx context.Context, requestUsername, payloadUsername string) error
+	DeleteUser(ctx context.Context, requestUsername, payloadUsername string) error
 	ProfileUser(ctx context.Context, userID string) (*response.UserProfileResponse, error)
 	GetAllUsers(ctx context.Context, requestData *request.SearchPaginationRequest) (*response.UserResponses, error)
 }
@@ -29,6 +30,7 @@ type userUsecaseImpl struct {
 	Validate          *validator.Validate
 	ViperConfig       util.Config
 	TitanMail         mail.EmailSender
+	TokenMaker        token.Maker
 	UserRepository    repository.UserRepository
 	EmailRepository   repository.EmailRepository
 	AccountRepository repository.AccountRepository
@@ -57,24 +59,26 @@ func (u *userUsecaseImpl) RegisterNewUser(ctx context.Context, requestData *requ
 		return nil, err
 	}
 
+	// Check username already exists
 	_, exists, _ := u.UserRepository.FindUsernameIsExists(tx, requestData.Username)
 
 	if exists {
 		return nil, util.UsernameAlreadyExists
 	}
 
-	resultUser, _ := u.UserRepository.FindByEmail(tx, requestData.Email)
+	// Check email with verified true already exists
+	resultUser, _ := u.UserRepository.FindByEmailVerified(tx, requestData.Email)
 
-	log.Printf("resultUser : %+v", resultUser)
+	// Check email already exists return error if exists
 	if resultUser != nil && resultUser.IsEmailVerified {
 		return nil, util.EmailAlreadyExists
 	}
 
+	// Hash password
 	hashedPassword, _ := util.HashPassword(requestData.Password)
 	requestData.Password = hashedPassword
 
 	requestUserEntity := requestData.ToEntity()
-
 	err = u.UserRepository.UserCreate(tx, requestUserEntity)
 
 	if err != nil {
@@ -82,6 +86,7 @@ func (u *userUsecaseImpl) RegisterNewUser(ctx context.Context, requestData *requ
 		return nil, err
 	}
 
+	// Create email verify
 	requestEmail := request.EmailRequest{
 		UserID:     requestUserEntity.ID,
 		Username:   requestUserEntity.Username,
@@ -103,6 +108,7 @@ func (u *userUsecaseImpl) RegisterNewUser(ctx context.Context, requestData *requ
 		return nil, err
 	}
 
+	// Send email verification
 	go func() {
 		verifLink := baseUrl + "/api/v1/auth/_verify-email?secret=" + requestEmail.SecretCode
 		subject, content, toEmail := mail.GetSenderParamEmailVerification(requestEmail.Email, verifLink)
@@ -180,7 +186,7 @@ func (u *userUsecaseImpl) VerifyUserEmail(ctx context.Context, secretCode string
 	return resultEmail.ToEmailVerifyResponse(), nil
 }
 
-func (u *userUsecaseImpl) SoftDeleteUser(ctx context.Context, requestUsername, payloadUsername string) error {
+func (u *userUsecaseImpl) DeleteUser(ctx context.Context, requestUsername, payloadUsername string) error {
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -249,6 +255,7 @@ func (u *userUsecaseImpl) GetAllUsers(ctx context.Context, requestData *request.
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
+	// Get all users with pagination and search
 	users, total, err := u.UserRepository.FindAllUsers(tx, requestData)
 
 	if err != nil {
@@ -256,6 +263,7 @@ func (u *userUsecaseImpl) GetAllUsers(ctx context.Context, requestData *request.
 		return nil, err
 	}
 
+	// Calculate the total page pagination
 	resultPaging := &response.PostPageMetaData{
 		Page:      requestData.Page,
 		Size:      requestData.Size,
