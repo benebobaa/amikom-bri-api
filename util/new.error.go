@@ -20,4 +20,6 @@ var (
 	UsernameAndEmailNotMatch = errors.New("Username and email not match")
 	InvalidResetToken        = errors.New("Invalid secret token")
 	ResetTokenAlreadyUsed    = errors.New("Secret token already used")
+	AccountNotBelongToUser   = errors.New("Account not belong to user")
+	InsufficientBalance      = errors.New("Insufficient balance")
 )

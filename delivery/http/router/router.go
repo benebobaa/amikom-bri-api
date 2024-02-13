@@ -6,10 +6,12 @@ import (
 )
 
 type RouteConfig struct {
-	App            *fiber.App
-	AuthMiddleware fiber.Handler
-	UserController controller.UserController
-	WebController  controller.WebController
+	App                *fiber.App
+	AuthMiddleware     fiber.Handler
+	UserController     controller.UserController
+	WebController      controller.WebController
+	TransferController controller.TransferController
+	EntryController    controller.EntryController
 }
 
 func (c *RouteConfig) Setup() {
@@ -46,4 +48,9 @@ func (c *RouteConfig) SetupAuthRoute() {
 	c.App.Get("/api/v1/users/profile", c.UserController.Profile)
 	c.App.Get("/api/v1/users", c.UserController.FindAll)
 
+	// Transfer
+	c.App.Post("/api/v1/transfer", c.TransferController.Transfer)
+
+	// Entries
+	c.App.Get("/api/v1/entries", c.EntryController.FindAllEntries)
 }

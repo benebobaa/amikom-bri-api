@@ -20,6 +20,6 @@ type UserProfileResponse struct {
 }
 
 type UserResponses struct {
-	Users  []UserResponse    `json:"users"`
-	Paging *PostPageMetaData `json:"paging"`
+	Users  []UserResponse `json:"users"`
+	Paging *PageMetaData  `json:"paging"`
 }

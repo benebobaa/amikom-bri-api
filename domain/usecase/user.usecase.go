@@ -264,7 +264,7 @@ func (u *userUsecaseImpl) GetAllUsers(ctx context.Context, requestData *request.
 	}
 
 	// Calculate the total page pagination
-	resultPaging := &response.PostPageMetaData{
+	resultPaging := &response.PageMetaData{
 		Page:      requestData.Page,
 		Size:      requestData.Size,
 		TotalItem: total,

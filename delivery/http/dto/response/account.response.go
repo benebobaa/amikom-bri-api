@@ -3,7 +3,7 @@ package response
 import "time"
 
 type AccountResponse struct {
-	ID        int       `json:"id"`
+	ID        int64     `json:"id"`
 	Balance   int64     `json:"balance"`
 	CreatedAt time.Time `json:"created_at"`
 }

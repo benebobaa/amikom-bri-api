@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"database/sql"
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
 	"gorm.io/gorm"
 	"time"
@@ -14,6 +15,7 @@ type User struct {
 	HashedPassword  string         `gorm:"column:hashed_password"`
 	IsEmailVerified bool           `gorm:"column:is_email_verified"`
 	Account         Account        `gorm:"foreignKey:UserID;references:ID"`
+	HashedPin       sql.NullString `gorm:"column:hashed_pin"`
 	CreatedAt       time.Time      `gorm:"column:created_at"`
 	UpdatedAt       time.Time      `gorm:"column:updated_at"`
 	DeletedAt       gorm.DeletedAt `gorm:"column:deleted_at;index"`
@@ -51,7 +53,7 @@ func (u *User) ToUserProfileResponse() *response.UserProfileResponse {
 	}
 }
 
-func ToUserResponses(users []User, pagingMetadata *response.PostPageMetaData) *response.UserResponses {
+func ToUserResponses(users []User, pagingMetadata *response.PageMetaData) *response.UserResponses {
 	var userResponses []response.UserResponse
 	for _, user := range users {
 		userResponses = append(userResponses, *user.ToUserResponse())
