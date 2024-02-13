@@ -22,4 +22,5 @@ var (
 	ResetTokenAlreadyUsed    = errors.New("Secret token already used")
 	AccountNotBelongToUser   = errors.New("Account not belong to user")
 	InsufficientBalance      = errors.New("Insufficient balance")
+	InvalidPin               = errors.New("Invalid pin")
 )

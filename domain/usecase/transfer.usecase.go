@@ -47,15 +47,24 @@ func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *re
 	// Find account by id
 	account, err := t.AccountRepository.FindByID(tx, requestData.FromAccountID)
 
-	if err != nil {
-		log.Printf("Error when find account by id : %+v", err)
-		return err
-	}
-
 	// Check if account not belong to user
 	if account.UserID != userID {
 		log.Printf("Account not belong to user")
 		return util.AccountNotBelongToUser
+	}
+
+	// Check pin before transaction
+	isValid := util.CheckPassword(requestData.Pin, account.User.HashedPin)
+
+	if !isValid {
+		log.Printf("Pin not valid")
+		return util.InvalidPin
+	}
+
+	log.Printf("account user: %+v", account.User)
+	if err != nil {
+		log.Printf("Error when find account by id : %+v", err)
+		return err
 	}
 
 	// Check if account balance is sufficient

@@ -10,6 +10,7 @@ type Account struct {
 	ID        int64          `gorm:"column:id;primaryKey;"`
 	UserID    string         `gorm:"column:user_id;not null"`
 	Balance   int64          `gorm:"column:balance;not null"`
+	User      *User          `gorm:"foreignKey:UserID;references:ID"`
 	CreatedAt time.Time      `gorm:"column:created_at;not null"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;not null"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at"`

@@ -48,7 +48,7 @@ func (a *accountRepositoryImpl) FindByUserID(tx *gorm.DB, userID string) (*entit
 func (a *accountRepositoryImpl) FindByID(tx *gorm.DB, id int64) (*entity.Account, error) {
 	var account entity.Account
 
-	result := tx.Where("id = ?", id).First(&account)
+	result := tx.Where("id = ?", id).Preload("User").First(&account)
 
 	if result.Error != nil {
 		log.Println(fmt.Sprintf("Error when find account by id : %v", result.Error))

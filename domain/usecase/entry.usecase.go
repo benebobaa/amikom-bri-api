@@ -66,6 +66,5 @@ func (e *entryUsecaseImpl) FindAllHistoryTransfer(ctx context.Context, requestDa
 }
 
 func (e *entryUsecaseImpl) DeleteEntry(ctx context.Context, entryID int64, userID string) error {
-	tx := e.DB.WithContext(ctx).Begin()
-	defer tx.Rollback()
+	return nil
 }

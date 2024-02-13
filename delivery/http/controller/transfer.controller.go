@@ -51,6 +51,15 @@ func (t *transferControllerImpl) Transfer(ctx *fiber.Ctx) error {
 			)
 			return ctx.Status(statusCode).JSON(resp)
 		}
+		if errors.Is(err, util.InvalidPin) {
+			resp, statusCode := util.ConstructBaseResponse(
+				util.BaseResponse{
+					Code:   fiber.StatusBadRequest,
+					Status: err.Error(),
+				},
+			)
+			return ctx.Status(statusCode).JSON(resp)
+		}
 		if errors.Is(err, util.InsufficientBalance) {
 			resp, statusCode := util.ConstructBaseResponse(
 				util.BaseResponse{

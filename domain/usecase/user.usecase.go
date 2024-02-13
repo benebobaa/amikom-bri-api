@@ -78,6 +78,10 @@ func (u *userUsecaseImpl) RegisterNewUser(ctx context.Context, requestData *requ
 	hashedPassword, _ := util.HashPassword(requestData.Password)
 	requestData.Password = hashedPassword
 
+	// Hash pin
+	hashedPin, _ := util.HashPassword(requestData.Pin)
+	requestData.Pin = hashedPin
+
 	requestUserEntity := requestData.ToEntity()
 	err = u.UserRepository.UserCreate(tx, requestUserEntity)
 

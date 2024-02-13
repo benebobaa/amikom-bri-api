@@ -10,6 +10,7 @@ type UserRegisterRequest struct {
 	Email           string `json:"email" validate:"required,email"`
 	Password        string `json:"password" validate:"required"`
 	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
+	Pin             string `json:"pin" validate:"required,len=6,number"`
 }
 
 func (u *UserRegisterRequest) ToEntity() *entity.User {
@@ -18,5 +19,6 @@ func (u *UserRegisterRequest) ToEntity() *entity.User {
 		Email:          u.Email,
 		FullName:       u.FullName,
 		HashedPassword: u.Password,
+		HashedPin:      u.Pin,
 	}
 }
