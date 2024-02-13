@@ -53,4 +53,5 @@ func (c *RouteConfig) SetupAuthRoute() {
 
 	// Entries
 	c.App.Get("/api/v1/entries", c.EntryController.FindAllEntries)
+	c.App.Get("/api/v1/entries/filter-date", c.EntryController.FindAllFilterDate)
 }

@@ -41,3 +41,50 @@ func GetSenderParamResetPassword(toEmail, resetLink string) (string, string, []s
 
 	return subject, content, to
 }
+
+func GetSenderParamTransferNotification(toEmail string, amount int64) (string, string, []string) {
+	subject := "Transfer Notification from Amikom Pedia"
+
+	content := fmt.Sprintf(`
+        <h1>Hello %s,</h1>
+
+        <p>We want to inform you that a transfer has been made from your Amikom Pedia account.</p>
+
+        <p>Transfer Details:</p>
+        <ul>
+            <li>Amount: %d $</li>
+        </ul>
+
+        <p>If you authorized this transfer, you can ignore this email. If you did not initiate this transfer or have any concerns, please contact our support team immediately.</p>
+
+        <p>Thank you for using Amikom Pedia!</p>
+    `, toEmail, amount)
+
+	to := []string{toEmail}
+
+	return subject, content, to
+}
+
+func GetReceiverParamTransferNotification(receiverEmail, senderName string, amount int64) (string, string, []string) {
+	subject := "Incoming Transfer Notification from Amikom Pedia"
+
+	content := fmt.Sprintf(`
+        <h1>Hello %s,</h1>
+
+        <p>You have received a transfer from %s through Amikom Pedia.</p>
+
+        <p>Transfer Details:</p>
+        <ul>
+            <li>Amount: %d $</li>
+            <!-- You can add more details like date, transaction ID, etc. as needed -->
+        </ul>
+
+        <p>If you were not expecting this transfer or have any concerns, please contact our support team immediately.</p>
+
+        <p>Thank you for using Amikom Pedia!</p>
+    `, receiverEmail, senderName, amount)
+
+	to := []string{receiverEmail}
+
+	return subject, content, to
+}

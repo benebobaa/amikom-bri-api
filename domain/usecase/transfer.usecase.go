@@ -6,6 +6,7 @@ import (
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
 	"github.com/benebobaa/amikom-bri-api/domain/repository"
 	"github.com/benebobaa/amikom-bri-api/util"
+	"github.com/benebobaa/amikom-bri-api/util/mail"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 	"log"
@@ -18,16 +19,18 @@ type TransferUsecase interface {
 type transferUsecaseImpl struct {
 	DB                 *gorm.DB
 	Validate           *validator.Validate
+	TitanMail          mail.EmailSender
 	TransferRepository repository.TransferRepository
 	AccountRepository  repository.AccountRepository
 	EntryRepository    repository.EntryRepository
 }
 
-func NewTransferUsecase(db *gorm.DB, validate *validator.Validate, transferRepository repository.TransferRepository,
+func NewTransferUsecase(db *gorm.DB, validate *validator.Validate, titanMail mail.EmailSender, transferRepository repository.TransferRepository,
 	accountRepository repository.AccountRepository, entryRepository repository.EntryRepository) TransferUsecase {
 	return &transferUsecaseImpl{
 		DB:                 db,
 		Validate:           validate,
+		TitanMail:          titanMail,
 		TransferRepository: transferRepository,
 		AccountRepository:  accountRepository,
 		EntryRepository:    entryRepository,
@@ -46,11 +49,22 @@ func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *re
 
 	// Find account by id
 	account, err := t.AccountRepository.FindByID(tx, requestData.FromAccountID)
+	if err != nil {
+		log.Printf("Error when find to account with id : %+v", err)
+		return util.AccounDoesNotExist
+	}
 
 	// Check if account not belong to user
 	if account.UserID != userID {
 		log.Printf("Account not belong to user")
 		return util.AccountNotBelongToUser
+	}
+
+	// Get to account id email
+	toAccount, err := t.AccountRepository.FindByID(tx, requestData.ToAccountID)
+	if err != nil {
+		log.Printf("Error when find to account with id : %+v", err)
+		return util.DestinationAccountNotExist
 	}
 
 	// Check pin before transaction
@@ -111,9 +125,17 @@ func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *re
 
 	// Updates balance account
 	if requestData.FromAccountID < requestData.ToAccountID {
-		err = t.updateAccountBalance(tx, requestData.FromAccountID, -requestData.Amount, requestData.ToAccountID, requestData.Amount)
+		err = t.updateAccountBalance(tx, account.User.Email, toAccount.User.Email, requestData.FromAccountID, -requestData.Amount, requestData.ToAccountID, requestData.Amount)
+		if err != nil {
+			log.Printf("Error when update balance : %+v", err)
+			return err
+		}
 	} else {
-		err = t.updateAccountBalance(tx, requestData.ToAccountID, requestData.Amount, requestData.FromAccountID, -requestData.Amount)
+		err = t.updateAccountBalance(tx, account.User.Email, toAccount.User.Email, requestData.ToAccountID, requestData.Amount, requestData.FromAccountID, -requestData.Amount)
+		if err != nil {
+			log.Printf("Error when update balance : %+v", err)
+			return err
+		}
 	}
 
 	err = tx.Commit().Error
@@ -126,10 +148,47 @@ func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *re
 
 func (t *transferUsecaseImpl) updateAccountBalance(
 	tx *gorm.DB,
+	fromUser string,
+	toUser string,
 	accountID1 int64,
 	amount1 int64,
 	accountID2 int64,
 	amount2 int64) error {
+
+	// Send notification emails to both sender and receiver
+	if amount1 > amount2 {
+		go func() {
+			subject, content, toEmail := mail.GetReceiverParamTransferNotification(toUser, fromUser, amount1)
+			err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
+			if err != nil {
+				log.Printf("Failed send email : %+v", err)
+			}
+		}()
+
+		go func() {
+			subject, content, toEmail := mail.GetSenderParamTransferNotification(fromUser, amount1)
+			err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
+			if err != nil {
+				log.Printf("Failed send email : %+v", err)
+			}
+		}()
+	} else {
+		go func() {
+			subject, content, toEmail := mail.GetReceiverParamTransferNotification(toUser, fromUser, amount2)
+			err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
+			if err != nil {
+				log.Printf("Failed send email : %+v", err)
+			}
+		}()
+
+		go func() {
+			subject, content, toEmail := mail.GetSenderParamTransferNotification(fromUser, amount2)
+			err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
+			if err != nil {
+				log.Printf("Failed send email : %+v", err)
+			}
+		}()
+	}
 
 	err := t.AccountRepository.AddAccountBalance(tx, accountID1, amount1)
 	if err != nil {

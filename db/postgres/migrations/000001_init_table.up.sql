@@ -16,7 +16,7 @@ CREATE TABLE "users" (
 -- Accounts Table
 CREATE TABLE "accounts" (
                             id bigserial PRIMARY KEY,
-                            user_id UUID REFERENCES "users"(id) ON DELETE CASCADE,
+                            user_id UUID REFERENCES "users"(id) ,
                             balance bigint NOT NULL,
                             created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
@@ -26,7 +26,7 @@ CREATE TABLE "accounts" (
 -- Verify Emails Table
 CREATE TABLE "verify_emails" (
                                 id bigserial PRIMARY KEY,
-                                user_id UUID REFERENCES "users"(id) ON DELETE CASCADE,
+                                user_id UUID REFERENCES "users"(id),
                                 email varchar NOT NULL,
                                 secret_code varchar NOT NULL,
                                 is_used bool NOT NULL DEFAULT false,
@@ -41,7 +41,7 @@ CREATE TABLE "verify_emails" (
 -- Session table
 CREATE TABLE "sessions" (
                             id UUID PRIMARY KEY,
-                            user_id UUID REFERENCES "users"(id) ON DELETE CASCADE,
+                            user_id UUID REFERENCES "users"(id) ,
                             refresh_token TEXT NOT NULL ,
                             user_agent varchar NOT NULL,
                             client_ip varchar NOT NULL,

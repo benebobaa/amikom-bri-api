@@ -12,6 +12,7 @@ type AccountRepository interface {
 	FindByUserID(tx *gorm.DB, userID string) (*entity.Account, bool, error)
 	FindByID(tx *gorm.DB, id int64) (*entity.Account, error)
 	AddAccountBalance(tx *gorm.DB, accountID int64, amount int64) error
+	DeleteAccount(tx *gorm.DB, value *entity.Account) error
 }
 
 type accountRepositoryImpl struct {
@@ -63,6 +64,18 @@ func (a *accountRepositoryImpl) AddAccountBalance(tx *gorm.DB, accountID int64, 
 
 	if result.Error != nil {
 		log.Println(fmt.Sprintf("Error when add account balance : %v", result.Error))
+		return result.Error
+	}
+
+	return nil
+}
+
+func (a *accountRepositoryImpl) DeleteAccount(tx *gorm.DB, value *entity.Account) error {
+
+	result := tx.Delete(value)
+
+	if result.Error != nil {
+		log.Println(fmt.Sprintf("Error when delete account : %v", result.Error))
 		return result.Error
 	}
 

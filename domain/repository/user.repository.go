@@ -41,7 +41,7 @@ func (u *userRepositoryImpl) UserCreate(tx *gorm.DB, value *entity.User) error {
 func (u *userRepositoryImpl) FindUsernameIsExists(tx *gorm.DB, username string) (*entity.User, bool, error) {
 	var value entity.User
 
-	result := tx.Where("username = ?", username).First(&value)
+	result := tx.Where("username = ?", username).Preload("Account").First(&value)
 
 	log.Println("result", &value)
 	if result.Error != nil {
@@ -72,7 +72,7 @@ func (u *userRepositoryImpl) FindByEmailVerified(tx *gorm.DB, email string) (*en
 func (u *userRepositoryImpl) FindByUsernameOrEmail(tx *gorm.DB, value *entity.User) (*entity.User, error) {
 	var user entity.User
 
-	result := tx.Where("username = ?", value.Username).Or("email = ?", value.Email).First(&user)
+	result := tx.Preload("Account").Where("username = ?", value.Username).Or("email = ?", value.Email).First(&user)
 
 	if result.Error != nil {
 		log.Println(fmt.Sprintf("Error when find username or email : %v", result.Error))
@@ -107,8 +107,9 @@ func (u *userRepositoryImpl) DeleteUser(tx *gorm.DB, value *entity.User) error {
 func (u *userRepositoryImpl) FindByUserID(tx *gorm.DB, userID string) (*entity.User, error) {
 	var user entity.User
 
-	result := tx.Where("id = ?", userID).Preload("Account").First(&user)
+	result := tx.Preload("Account").Where("id = ?", userID).First(&user)
 
+	log.Println("USER WITH ACCOUNT", user)
 	if result.Error != nil {
 		log.Println(fmt.Sprintf("Error when find user by user id : %v", result.Error))
 		return nil, result.Error

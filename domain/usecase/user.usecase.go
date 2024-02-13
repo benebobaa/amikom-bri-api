@@ -179,7 +179,7 @@ func (u *userUsecaseImpl) VerifyUserEmail(ctx context.Context, secretCode string
 		return nil, err
 	}
 
-	u.AccountRepository.AccountCreate(tx, &entity.Account{UserID: resultEmail.UserID})
+	u.AccountRepository.AccountCreate(tx, &entity.Account{UserID: resultEmail.UserID, Balance: util.RandomInt(1000, 10000)})
 
 	err = tx.Commit().Error
 	if err != nil {
@@ -222,6 +222,18 @@ func (u *userUsecaseImpl) DeleteUser(ctx context.Context, requestUsername, paylo
 		return err
 	}
 
+	account, err := u.AccountRepository.FindByID(tx, resultUser.Account.ID)
+
+	if err != nil {
+		log.Printf("Failed find account by id : %+v", err)
+		return err
+	}
+
+	err = u.AccountRepository.DeleteAccount(tx, account)
+	if err != nil {
+		log.Printf("Failed delete account : %+v", err)
+		return err
+	}
 	err = tx.Commit().Error
 	if err != nil {
 		log.Printf("Failed commit db transaction : %+v", err)
