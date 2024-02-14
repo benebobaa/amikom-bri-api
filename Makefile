@@ -5,27 +5,18 @@ createdb:
 	sudo docker exec -it postgres16 createdb --username=root --owner=root amikombri
 
 dropdb:
-	sudo docker exec -it postgres16 dropdb amikompedia
+	sudo docker exec -it postgres16 dropdb amikombri
 
-migratecreateps:
+migratecreate:
 	migrate create -ext sql -dir db/postgres/migrations -seq $(name)
 
-migratecreatess:
-	migrate create -ext sql -dir db/sqlserver/migrations -seq $(name)
-
-migrateupps:
+migrateup:
 	migrate -path db/postgres/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose up
 
-migrateupss:
-	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose up
-
-migratedownps:
+migratedown:
 	migrate -path db/postgres/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose down 1
 
-migratedownss:
-	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose down 1
-
-migratefixps:
+migratefix:
 	migrate -path db/postgres/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose force $(version)
 
 test:
