@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+
+
+  postgres:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=amikombri
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+        - "8080:8080"
+    environment:
+      - PORT_APP=8080
+      - DB_DSN=postgres://root:root@localhost:5432/amikombri?sslmode=disable
+      - APP_NAME=Amikom-Bri
+      - GO_ENV=DEV
+      - TOKEN_ACCESS_SYMETRIC_KEY=msfwvvokev71979lkfoqjipld97802jw
+      - TOKEN_REFRESH_SYMETRIC_KEY=ms71qjipld979lkfo9vvo7802jwfwkev
+      - SECRET_KEY_RESET_PASSWORD=wxzxzqkippt38077beovkvt25439zom7
+      - TOKEN_ACCESS_DURATION=15m
+      - REFRESH_TOKEN_DURATION=24h
+      - SECRET_KEY_DURATION=5m
+      - EMAIL_NAME=Amikom Pedia
+      - EMAIL_SENDER=info@amikompedia.xyz
+      - EMAIL_PASSWORD=--SECRET--
+    depends_on:
+      - postgres
+    entrypoint: ["/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh"]
+    command: ["/app/main"]
