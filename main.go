@@ -15,6 +15,9 @@ import (
 var resourcefs embed.FS
 
 func main() {
+
+	gopdf := util.NewPDFGenerator()
+
 	viperConfig, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
@@ -36,6 +39,7 @@ func main() {
 		DB:          db,
 		App:         fiber,
 		Validate:    validate,
+		GoPdf:       gopdf,
 		TokenMaker:  tokenMaker,
 		ViperConfig: viperConfig,
 		TitanMail:   mailSender,

@@ -39,7 +39,7 @@ func (t *transferControllerImpl) Transfer(ctx *fiber.Ctx) error {
 		return ctx.Status(statusCode).JSON(resp)
 	}
 
-	err = t.transferUsecase.TransferMoney(ctx.UserContext(), requestBody, authPayload.UserID)
+	result, err := t.transferUsecase.TransferMoney(ctx.UserContext(), requestBody, authPayload.UserID)
 
 	if err != nil {
 		if errors.Is(err, util.AccountNotBelongToUser) {
@@ -82,6 +82,7 @@ func (t *transferControllerImpl) Transfer(ctx *fiber.Ctx) error {
 		util.BaseResponse{
 			Code:   fiber.StatusOK,
 			Status: "Transfer success",
+			Data:   result,
 		},
 	)
 

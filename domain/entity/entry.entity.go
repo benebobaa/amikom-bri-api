@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"fmt"
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
 	"gorm.io/gorm"
 	"time"
@@ -17,6 +18,7 @@ type Entry struct {
 	Date      time.Time      `gorm:"column:date;type:date; not null; default:now()"`
 	Amount    int64          `gorm:"column:amount"`
 	EntryType string         `gorm:"column:entry_type"`
+	Account   Account        `gorm:"foreignKey:AccountID;references:ID"`
 	CreatedAt time.Time      `gorm:"column:created_at"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at"`
 }
@@ -45,4 +47,8 @@ func ToEntryResponses(entries []Entry, pagingMetaData *response.PageMetaData) *r
 		Entries: entryResponses,
 		Paging:  pagingMetaData,
 	}
+}
+
+func (e *Entry) ToString() string {
+	return fmt.Sprintf("%d ")
 }

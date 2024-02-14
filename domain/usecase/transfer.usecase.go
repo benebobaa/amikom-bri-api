@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/request"
+	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
 	"github.com/benebobaa/amikom-bri-api/domain/repository"
 	"github.com/benebobaa/amikom-bri-api/util"
@@ -13,7 +14,7 @@ import (
 )
 
 type TransferUsecase interface {
-	TransferMoney(ctx context.Context, requestData *request.TransferRequest, userID string) error
+	TransferMoney(ctx context.Context, requestData *request.TransferRequest, userID string) (*response.TransferResponse, error)
 }
 
 type transferUsecaseImpl struct {
@@ -37,34 +38,34 @@ func NewTransferUsecase(db *gorm.DB, validate *validator.Validate, titanMail mai
 	}
 }
 
-func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *request.TransferRequest, userID string) error {
+func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *request.TransferRequest, userID string) (*response.TransferResponse, error) {
 	tx := t.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
 	err := t.Validate.Struct(requestData)
 	if err != nil {
 		log.Printf("Invalid request body : %+v", err)
-		return err
+		return nil, err
 	}
 
 	// Find account by id
 	account, err := t.AccountRepository.FindByID(tx, requestData.FromAccountID)
 	if err != nil {
 		log.Printf("Error when find to account with id : %+v", err)
-		return util.AccounDoesNotExist
+		return nil, util.AccounDoesNotExist
 	}
 
 	// Check if account not belong to user
 	if account.UserID != userID {
 		log.Printf("Account not belong to user")
-		return util.AccountNotBelongToUser
+		return nil, util.AccountNotBelongToUser
 	}
 
 	// Get to account id email
 	toAccount, err := t.AccountRepository.FindByID(tx, requestData.ToAccountID)
 	if err != nil {
 		log.Printf("Error when find to account with id : %+v", err)
-		return util.DestinationAccountNotExist
+		return nil, util.DestinationAccountNotExist
 	}
 
 	// Check pin before transaction
@@ -72,19 +73,19 @@ func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *re
 
 	if !isValid {
 		log.Printf("Pin not valid")
-		return util.InvalidPin
+		return nil, util.InvalidPin
 	}
 
 	log.Printf("account user: %+v", account.User)
 	if err != nil {
 		log.Printf("Error when find account by id : %+v", err)
-		return err
+		return nil, err
 	}
 
 	// Check if account balance is sufficient
 	if account.Balance < requestData.Amount {
 		log.Printf("Insufficient balance")
-		return util.InsufficientBalance
+		return nil, util.InsufficientBalance
 	}
 
 	// Create transfer
@@ -106,7 +107,7 @@ func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *re
 
 	if err != nil {
 		log.Printf("Error when create entry out : %+v", err)
-		return err
+		return nil, err
 	}
 
 	// Create entry in
@@ -120,7 +121,7 @@ func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *re
 
 	if err != nil {
 		log.Printf("Error when create entry in : %+v", err)
-		return err
+		return nil, err
 	}
 
 	// Updates balance account
@@ -128,22 +129,29 @@ func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *re
 		err = t.updateAccountBalance(tx, account.User.Email, toAccount.User.Email, requestData.FromAccountID, -requestData.Amount, requestData.ToAccountID, requestData.Amount)
 		if err != nil {
 			log.Printf("Error when update balance : %+v", err)
-			return err
+			return nil, err
 		}
 	} else {
 		err = t.updateAccountBalance(tx, account.User.Email, toAccount.User.Email, requestData.ToAccountID, requestData.Amount, requestData.FromAccountID, -requestData.Amount)
 		if err != nil {
 			log.Printf("Error when update balance : %+v", err)
-			return err
+			return nil, err
 		}
 	}
 
 	err = tx.Commit().Error
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	// data transfer, account mapping to response
+	transferResp := response.TransferResponse{
+		Transfer:    transferEntity.ToTransfeInfo(),
+		FromAccount: account.ToAccountResponse(),
+		ToAccount:   toAccount.ToAccountResponse(),
+	}
+
+	return &transferResp, nil
 }
 
 func (t *transferUsecaseImpl) updateAccountBalance(

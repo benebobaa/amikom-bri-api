@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
 	"gorm.io/gorm"
 	"time"
 )
@@ -16,4 +17,13 @@ type Transfer struct {
 
 func (t *Transfer) TableName() string {
 	return "transfers"
+}
+
+func (t *Transfer) ToTransfeInfo() *response.TranferInfo {
+	return &response.TranferInfo{
+		Amount:        t.Amount,
+		FromAccountID: t.FromAccountID,
+		ToAccountID:   t.ToAccountID,
+		CreatedAt:     t.CreatedAt,
+	}
 }

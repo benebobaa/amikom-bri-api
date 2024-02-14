@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/request"
 	"github.com/benebobaa/amikom-bri-api/delivery/http/middleware"
 	"github.com/benebobaa/amikom-bri-api/domain/usecase"
@@ -11,7 +12,7 @@ import (
 
 type EntryController interface {
 	FindAllEntries(ctx *fiber.Ctx) error
-	FindAllFilterDate(ctx *fiber.Ctx) error
+	FindAllFilter(ctx *fiber.Ctx) error
 }
 
 type entryControllerImpl struct {
@@ -24,17 +25,46 @@ func NewEntryController(entryUsecase usecase.EntryUsecase) EntryController {
 	}
 }
 
-func (e *entryControllerImpl) FindAllEntries(ctx *fiber.Ctx) error {
+func (e *entryControllerImpl) FindAllFilter(ctx *fiber.Ctx) error {
 
 	authPayload := ctx.Locals(middleware.AuthorizationPayloadKey).(*token.Payload)
 
 	request := &request.SearchPaginationRequest{
-		Keyword: ctx.Query("entry_type", ""),
-		Page:    ctx.QueryInt("page", 1),
-		Size:    ctx.QueryInt("size", 10),
+		Keyword:   ctx.Query("entry_type", ""),
+		Filter:    ctx.Query("filter", ""),
+		Date:      ctx.Query("date", ""),
+		ExportPdf: ctx.QueryBool("export_pdf", false),
+		Page:      ctx.QueryInt("page", 1),
+		Size:      ctx.QueryInt("size", 10),
 	}
 
-	result, err := e.entryUsecase.FindAllHistoryTransfer(ctx.UserContext(), request, authPayload.UserID)
+	if request.ExportPdf {
+		_, fileName, err := e.entryUsecase.FindAllFilterDate(ctx.UserContext(), request, authPayload.UserID)
+		if err != nil {
+			if errors.Is(err, util.CannotExportEmptyData) {
+				resp, statusCode := util.ConstructBaseResponse(
+					util.BaseResponse{
+						Code:   fiber.StatusBadRequest,
+						Status: err.Error(),
+					},
+				)
+				return ctx.Status(statusCode).JSON(resp)
+			}
+			resp, statusCode := util.ConstructBaseResponse(
+				util.BaseResponse{
+					Code:   fiber.StatusBadRequest,
+					Status: err.Error(),
+				},
+			)
+			return ctx.Status(statusCode).JSON(resp)
+		}
+
+		//ctx.Type("application/transaction_pdf")
+		//ctx.Set("Content-Disposition", "attachment; filename="+fileName)
+		return ctx.SendFile(fileName, true)
+	}
+
+	result, _, err := e.entryUsecase.FindAllFilterDate(ctx.UserContext(), request, authPayload.UserID)
 
 	if err != nil {
 		resp, statusCode := util.ConstructBaseResponse(
@@ -57,18 +87,16 @@ func (e *entryControllerImpl) FindAllEntries(ctx *fiber.Ctx) error {
 	return ctx.Status(statusCode).JSON(resp)
 }
 
-func (e *entryControllerImpl) FindAllFilterDate(ctx *fiber.Ctx) error {
-
+func (e *entryControllerImpl) FindAllEntries(ctx *fiber.Ctx) error {
 	authPayload := ctx.Locals(middleware.AuthorizationPayloadKey).(*token.Payload)
 
 	request := &request.SearchPaginationRequest{
-		Filter: ctx.Query("filter", ""),
-		Date:   ctx.Query("date", ""),
-		Page:   ctx.QueryInt("page", 1),
-		Size:   ctx.QueryInt("size", 10),
+		Keyword: ctx.Query("entry_type", ""),
+		Page:    ctx.QueryInt("page", 1),
+		Size:    ctx.QueryInt("size", 10),
 	}
 
-	result, err := e.entryUsecase.FindAllFilterDate(ctx.UserContext(), request, authPayload.UserID)
+	result, err := e.entryUsecase.FindAllHistoryTransfer(ctx.UserContext(), request, authPayload.UserID)
 
 	if err != nil {
 		resp, statusCode := util.ConstructBaseResponse(

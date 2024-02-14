@@ -26,4 +26,5 @@ var (
 	DestinationAccountNotExist = errors.New("Destination account not exist")
 	AccounDoesNotExist         = errors.New("Account does not exist")
 	DateFormatNotValid         = errors.New("Date format not valid")
+	CannotExportEmptyData      = errors.New("Cannot export empty data to PDF")
 )

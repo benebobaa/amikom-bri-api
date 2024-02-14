@@ -18,6 +18,7 @@ type BootstrapConfig struct {
 	DB          *gorm.DB
 	App         *fiber.App
 	Validate    *validator.Validate
+	GoPdf       *util.PDFGenerator
 	TokenMaker  token.Maker
 	ViperConfig util.Config
 	TitanMail   mail.EmailSender
@@ -40,7 +41,7 @@ func Bootstrap(config *BootstrapConfig) {
 	loginUsecase := usecase.NewLoginUseCase(config.DB, config.Validate, config.TokenMaker, config.ViperConfig, userRepository, sessionRepository)
 	fPasswordUsecase := usecase.NewForgotPasswordUsecase(config.DB, config.Validate, config.ViperConfig, config.TokenMaker, config.TitanMail, userRepository, fPasswordRepository)
 	transferUsecase := usecase.NewTransferUsecase(config.DB, config.Validate, config.TitanMail, transferRepository, accountRepository, entryRepository)
-	entryUsecase := usecase.NewEntryUsecase(config.DB, entryRepository, accountRepository)
+	entryUsecase := usecase.NewEntryUsecase(config.DB, config.GoPdf, entryRepository, accountRepository)
 
 	// Setup controller
 	userController := controller.NewUserController(userUsecase, loginUsecase, fPasswordUsecase)

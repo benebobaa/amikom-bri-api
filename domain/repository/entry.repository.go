@@ -82,7 +82,7 @@ func (e *entryRepositoryImpl) DeleteEntry(tx *gorm.DB, value *entity.Entry) erro
 func (e *entryRepositoryImpl) FindAllFilterDate(db *gorm.DB, request *request.SearchPaginationRequest, accountID int64) ([]entity.Entry, int64, error) {
 	var entries []entity.Entry
 
-	err := db.Scopes(e.FilterEntries(request)).Offset((request.Page-1)*request.Size).Limit(request.Size).Where("account_id", accountID).Find(&entries).Error
+	err := db.Scopes(e.FilterEntries(request)).Preload("Account").Preload("Account.User").Offset((request.Page-1)*request.Size).Limit(request.Size).Where("account_id", accountID).Find(&entries).Error
 
 	if err != nil {
 		return nil, 0, err

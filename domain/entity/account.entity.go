@@ -22,8 +22,8 @@ func (a *Account) TableName() string {
 
 func (a *Account) ToAccountResponse() *response.AccountResponse {
 	return &response.AccountResponse{
-		ID:        a.ID,
-		Balance:   a.Balance,
-		CreatedAt: a.CreatedAt,
+		ID:       a.ID,
+		Username: a.User.Username,
+		Balance:  a.Balance,
 	}
 }
