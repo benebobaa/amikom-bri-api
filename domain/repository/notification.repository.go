@@ -9,6 +9,7 @@ import (
 
 type NotificationRepository interface {
 	NotificationCreate(tx *gorm.DB, value *entity.Notification) error
+	FindAllNotif(tx *gorm.DB, userId string) ([]entity.Notification, error)
 }
 
 type notificationRepositoryImpl struct {
@@ -28,4 +29,16 @@ func (n *notificationRepositoryImpl) NotificationCreate(tx *gorm.DB, value *enti
 
 	return nil
 
+}
+
+func (n *notificationRepositoryImpl) FindAllNotif(tx *gorm.DB, userId string) ([]entity.Notification, error) {
+	var notif []entity.Notification
+	result := tx.Find(&notif)
+
+	if result.Error != nil {
+		log.Println(fmt.Sprintf("Error when find all notification : %v", result.Error))
+		return nil, result.Error
+	}
+
+	return notif, nil
 }

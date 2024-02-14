@@ -11,7 +11,7 @@
 </p>
 
 - This project is a user-friendly solution for basic banking tasks, built using the Go programming language and adhering to the Clean Architecture principles. It encompasses essential features such as account creation, listing, balance checking, account transfers, and transaction history tracking. Additionally, it incorporates advanced functionalities like user registration, email verification, authentication with JWT (JSON Web Token) using access and refresh tokens, password recovery with email-based reset links, email notifications for transfers, and the ability to create and export transaction and expense history to PDF.
-- Tech Stack Used: Go, PostgreSQL, GORM, JWT, Validator, Viper and Fiber.
+- Tech Stack Used: Go, PostgreSQL, Onesignal ,GORM, JWT, Validator, Viper and Fiber.
 - Infrastructure: Docker, AWS EC2, AWS Sec Manager, AWS RDS, Github Actions, and Cloudflare.
 ## Architecture
 -  I have crafted this architecture inspired by Uncle Bob's Clean Architecture, the Golang course from Programmer Zaman Now, Harisenin's Proclass Golang, GSabadini's Repository, and also my own Created Go Native Clean Architecture. I have customized it to fit my specific needs. Source above this:

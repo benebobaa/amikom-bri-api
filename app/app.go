@@ -36,6 +36,7 @@ func Bootstrap(config *BootstrapConfig) {
 	accountRepository = repository.NewAccountRepository()
 	entryRepository := repository.NewEntryRepository()
 	expensesPlanRepository := repository.NewExpensesPlanRepository()
+	notificationRepository := repository.NewNotificationRepository()
 
 	// Setup usecases
 	userUsecase := usecase.NewUserUsecase(config.DB, config.Validate, config.TitanMail, userRepository, emailRepository, accountRepository)
@@ -44,6 +45,7 @@ func Bootstrap(config *BootstrapConfig) {
 	transferUsecase := usecase.NewTransferUsecase(config.DB, config.Validate, config.TitanMail, transferRepository, accountRepository, entryRepository)
 	entryUsecase := usecase.NewEntryUsecase(config.DB, config.GoPdf, entryRepository, accountRepository)
 	expensesPlanUsecase := usecase.NewExpensesPlanUsecase(config.DB, config.Validate, config.GoPdf, expensesPlanRepository)
+	notificationUsecase := usecase.NewNotificationUsecase(config.DB, notificationRepository)
 
 	// Setup controller
 	userController := controller.NewUserController(userUsecase, loginUsecase, fPasswordUsecase)
@@ -51,18 +53,20 @@ func Bootstrap(config *BootstrapConfig) {
 	transferController := controller.NewTransferController(transferUsecase)
 	entryController := controller.NewEntryController(entryUsecase)
 	expensesPlanController := controller.NewExpensesPlanController(expensesPlanUsecase)
+	notificationController := controller.NewNotificationController(notificationUsecase)
 
 	// Setup middleware
 	authMiddleware := middleware.AuthMiddleware(config.TokenMaker, config.ViperConfig)
 
 	routeConfig := router.RouteConfig{
-		App:                config.App,
-		AuthMiddleware:     authMiddleware,
-		UserController:     userController,
-		WebController:      webController,
-		TransferController: transferController,
-		EntryController:    entryController,
-		ExpensesController: expensesPlanController,
+		App:                    config.App,
+		AuthMiddleware:         authMiddleware,
+		UserController:         userController,
+		WebController:          webController,
+		TransferController:     transferController,
+		EntryController:        entryController,
+		ExpensesController:     expensesPlanController,
+		NotificationController: notificationController,
 	}
 
 	routeConfig.Setup()
