@@ -28,4 +28,5 @@ var (
 	DateFormatNotValid         = errors.New("Date format not valid")
 	CannotExportEmptyData      = errors.New("Cannot export empty data to PDF")
 	FailedDeleteUserAccount    = errors.New("Failed delete user, account balance is not zero")
+	ExpensesPlanNotFound       = errors.New("Expenses plan not found")
 )

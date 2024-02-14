@@ -5,7 +5,7 @@ import (
 )
 
 type UserRegisterRequest struct {
-	Username        string `json:"username"  validate:"required"`
+	Username        string `json:"username"  validate:"required,nowhitespace"`
 	FullName        string `json:"full_name" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 	Password        string `json:"password" validate:"required"`

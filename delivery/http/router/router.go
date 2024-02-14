@@ -12,6 +12,7 @@ type RouteConfig struct {
 	WebController      controller.WebController
 	TransferController controller.TransferController
 	EntryController    controller.EntryController
+	ExpensesController controller.ExpensesPlanController
 }
 
 func (c *RouteConfig) Setup() {
@@ -55,4 +56,10 @@ func (c *RouteConfig) SetupAuthRoute() {
 	c.App.Get("/api/v1/entries", c.EntryController.FindAllEntries)
 	c.App.Get("/api/v1/entries/filter", c.EntryController.FindAllFilter)
 
+	// Expenses Plan
+	c.App.Post("/api/v1/expenses-plan", c.ExpensesController.Create)
+	c.App.Delete("/api/v1/expenses-plan/:id", c.ExpensesController.Delete)
+	c.App.Get("/api/v1/expenses-plan", c.ExpensesController.FindAllFilter)
+	c.App.Patch("/api/v1/expenses-plan/:id", c.ExpensesController.Update)
+	c.App.Get("/api/v1/expenses-plan/export-pdf", c.ExpensesController.FindAllExportPdf)
 }

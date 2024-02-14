@@ -64,7 +64,6 @@ func (e *entryUsecaseImpl) FindAllHistoryTransfer(ctx context.Context, requestDa
 		TotalPage: int64(math.Ceil(float64(total) / float64(requestData.Size))),
 	}
 
-	log.Printf("result paging", resultPaging)
 	err = tx.Commit().Error
 	if err != nil {
 		return nil, err

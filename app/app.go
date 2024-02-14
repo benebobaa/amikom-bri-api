@@ -35,6 +35,7 @@ func Bootstrap(config *BootstrapConfig) {
 	transferRepository := repository.NewTransferRepository()
 	accountRepository = repository.NewAccountRepository()
 	entryRepository := repository.NewEntryRepository()
+	expensesPlanRepository := repository.NewExpensesPlanRepository()
 
 	// Setup usecases
 	userUsecase := usecase.NewUserUsecase(config.DB, config.Validate, config.TitanMail, userRepository, emailRepository, accountRepository)
@@ -42,12 +43,14 @@ func Bootstrap(config *BootstrapConfig) {
 	fPasswordUsecase := usecase.NewForgotPasswordUsecase(config.DB, config.Validate, config.ViperConfig, config.TokenMaker, config.TitanMail, userRepository, fPasswordRepository)
 	transferUsecase := usecase.NewTransferUsecase(config.DB, config.Validate, config.TitanMail, transferRepository, accountRepository, entryRepository)
 	entryUsecase := usecase.NewEntryUsecase(config.DB, config.GoPdf, entryRepository, accountRepository)
+	expensesPlanUsecase := usecase.NewExpensesPlanUsecase(config.DB, config.Validate, config.GoPdf, expensesPlanRepository)
 
 	// Setup controller
 	userController := controller.NewUserController(userUsecase, loginUsecase, fPasswordUsecase)
 	webController := controller.NewWebController(userUsecase, fPasswordUsecase)
 	transferController := controller.NewTransferController(transferUsecase)
 	entryController := controller.NewEntryController(entryUsecase)
+	expensesPlanController := controller.NewExpensesPlanController(expensesPlanUsecase)
 
 	// Setup middleware
 	authMiddleware := middleware.AuthMiddleware(config.TokenMaker, config.ViperConfig)
@@ -59,6 +62,7 @@ func Bootstrap(config *BootstrapConfig) {
 		WebController:      webController,
 		TransferController: transferController,
 		EntryController:    entryController,
+		ExpensesController: expensesPlanController,
 	}
 
 	routeConfig.Setup()
