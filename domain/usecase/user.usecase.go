@@ -200,10 +200,12 @@ func (u *userUsecaseImpl) DeleteUser(ctx context.Context, requestUsername, paylo
 		return err
 	}
 
+	// Check if request username and payload username is same
 	if requestUsername != payloadUsername {
 		return util.UnauthorizedDeleteUser
 	}
 
+	// Check username already exists
 	resultUser, _, err := u.UserRepository.FindUsernameIsExists(tx, requestUsername)
 
 	if err != nil {
@@ -215,17 +217,23 @@ func (u *userUsecaseImpl) DeleteUser(ctx context.Context, requestUsername, paylo
 		return err
 	}
 
-	err = u.UserRepository.DeleteUser(tx, resultUser)
-
-	if err != nil {
-		log.Printf("Failed delete user : %+v", err)
-		return err
-	}
-
+	// Find account user
 	account, err := u.AccountRepository.FindByID(tx, resultUser.Account.ID)
 
 	if err != nil {
 		log.Printf("Failed find account by id : %+v", err)
+		return err
+	}
+
+	// Check if account balance is not zero
+	if account.Balance > 0 {
+		return util.FailedDeleteUserAccount
+	}
+
+	err = u.UserRepository.DeleteUser(tx, resultUser)
+
+	if err != nil {
+		log.Printf("Failed delete user : %+v", err)
 		return err
 	}
 

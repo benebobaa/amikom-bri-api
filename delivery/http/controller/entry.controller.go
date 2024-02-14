@@ -59,8 +59,6 @@ func (e *entryControllerImpl) FindAllFilter(ctx *fiber.Ctx) error {
 			return ctx.Status(statusCode).JSON(resp)
 		}
 
-		//ctx.Type("application/transaction_pdf")
-		//ctx.Set("Content-Disposition", "attachment; filename="+fileName)
 		return ctx.SendFile(fileName, true)
 	}
 

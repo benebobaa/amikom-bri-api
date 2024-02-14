@@ -27,4 +27,5 @@ var (
 	AccounDoesNotExist         = errors.New("Account does not exist")
 	DateFormatNotValid         = errors.New("Date format not valid")
 	CannotExportEmptyData      = errors.New("Cannot export empty data to PDF")
+	FailedDeleteUserAccount    = errors.New("Failed delete user, account balance is not zero")
 )

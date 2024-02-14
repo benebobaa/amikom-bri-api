@@ -20,10 +20,20 @@ func (a *Account) TableName() string {
 	return "accounts"
 }
 
+func (a *Account) ToAccountResponseLogin(username string) *response.AccountResponse {
+	return &response.AccountResponse{
+		ID:        a.ID,
+		Username:  username,
+		Balance:   a.Balance,
+		CreatedAt: a.CreatedAt,
+	}
+}
+
 func (a *Account) ToAccountResponse() *response.AccountResponse {
 	return &response.AccountResponse{
-		ID:       a.ID,
-		Username: a.User.Username,
-		Balance:  a.Balance,
+		ID:        a.ID,
+		Username:  a.User.Username,
+		Balance:   a.Balance,
+		CreatedAt: a.CreatedAt,
 	}
 }

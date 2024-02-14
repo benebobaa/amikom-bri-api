@@ -124,5 +124,6 @@ func (l *loginUseCaseImpl) LoginUser(ctx context.Context, requestData *request.L
 		RefreshToken:          refreshToken,
 		RefreshTokenExpiresAt: refreshPayload.ExpiredAt,
 	}
+
 	return resultUser.ToLoginResponseWithToken(sessionResponse), nil
 }

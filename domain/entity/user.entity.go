@@ -30,7 +30,7 @@ func (u *User) ToUserResponse() *response.UserResponse {
 		Email:           u.Email,
 		FullName:        u.FullName,
 		IsEmailVerified: u.IsEmailVerified,
-		Account:         u.Account.ToAccountResponse(),
+		Account:         u.Account.ToAccountResponseLogin(u.Username),
 		CreatedAt:       u.CreatedAt,
 	}
 }
@@ -48,7 +48,7 @@ func (u *User) ToUserProfileResponse() *response.UserProfileResponse {
 		Email:           u.Email,
 		FullName:        u.FullName,
 		IsEmailVerified: u.IsEmailVerified,
-		Account:         u.Account.ToAccountResponse(),
+		Account:         u.Account.ToAccountResponseLogin(u.Username),
 	}
 }
 

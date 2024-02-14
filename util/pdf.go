@@ -87,7 +87,7 @@ func (p *PDFGenerator) GeneratePdf(entries []entity.Entry, totalIn, totalOut int
 		p.PDF.Ln(-1)
 	}
 
-	fileName := fmt.Sprintf("public/transaction_pdf/%s-%s.transaction_pdf", entries[0].Account.User.Email, uuid.NewString())
+	fileName := fmt.Sprintf("public/transaction_pdf/%s-%s.pdf", entries[0].Account.User.Email, uuid.NewString())
 
 	// Save the PDF file
 	err := p.PDF.OutputFileAndClose(fileName)
