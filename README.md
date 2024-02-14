@@ -1,6 +1,6 @@
 <h1 align="center">Welcome Simple Bank API GO Clean Architecture</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.11.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://goreportcard.com/badge/github.com/benebobaa/amikom-bri-api" target="_blank">
     <img alt="Build" src="https://goreportcard.com/badge/github.com/benebobaa/amikom-bri-api" />
   </a>
@@ -11,8 +11,8 @@
 </p>
 
 - This project is a user-friendly solution for basic banking tasks, built using the Go programming language and adhering to the Clean Architecture principles. It encompasses essential features such as account creation, listing, balance checking, account transfers, and transaction history tracking. Additionally, it incorporates advanced functionalities like user registration, email verification, authentication with JWT (JSON Web Token) using access and refresh tokens, password recovery with email-based reset links, email notifications for transfers, and the ability to create and export transaction and expense history to PDF.
-
-
+- Tech Stack Used: Go, PostgreSQL, GORM, JWT, Validator, Viper and Fiber.
+- Infrastructure: Docker, AWS EC2, AWS Sec Manager, AWS RDS, Github Actions, and Cloudflare.
 ## Architecture
 -  I have crafted this architecture inspired by Uncle Bob's Clean Architecture, the Golang course from Programmer Zaman Now, Harisenin's Proclass Golang, GSabadini's Repository, and also my own Created Go Native Clean Architecture. I have customized it to fit my specific needs. Source above this:
 - [Amikom Pedia API](https://github.com/benebobaa/amikom-pedia-api).
@@ -55,14 +55,28 @@ go run main.go
 ### Currently Published Example Endpoints
 ### Base URL: `https://go.amikompedia.xyz`
 
-| Endpoint                                 | HTTP Method           | Description       |
-|------------------------------------------| :---------------------: | :-----------------: |
-| `api/v1/accounts`                        | `POST`                | `Create accounts` |
-| `api/v1/accounts`                        | `GET`                 | `List accounts`   |
-| `api/v1/accounts/{{account_id}}/balance` | `GET`                |    `Find balance account` |
-| `api/v1/transfers`                       | `POST`                | `Create transfer` |
-| `api/v1/transfers`                       | `GET`                 | `List transfers`  |
-| `api/v1/health`                          | `GET`                 | `Health check`  |
+## Auth
+| Endpoint                                 | HTTP Method |       Description        |
+|------------------------------------------|:-----------:|:------------------------:|
+| `/api/v1/auth/_register`                       |   `POST`    | `Register user ` |
+| `/api/v1/auth/_login`                        |   `POST`    |  `Login user `   |
+| `/api/v1/auth/_forgot-password` |   `POST`    |  `Forgot password user`  |
 
-### For More Detail API Documentation Please Import `apispec.json` to Postman
+## Users
+
+| Endpoint                                 | HTTP Method |        Description        |
+|------------------------------------------|:-----------:|:-------------------------:|
+| `/api/v1/users/profile`                        |    `GET`    | `Get detail profile user` |
+| `/api/v1/users`                        |    `GET`    |    `List user account`    |
+| `/api/v1/users/:username` |  `DELETE`   |   `Delete user account`   |
+
+## Transaction
+
+| Endpoint                                 | HTTP Method |                  Description                  |
+|------------------------------------------|:-----------:|:---------------------------------------------:|
+| `/api/v1/transfer`                        |   `POST`    |     `Create transfer to another account`      |
+| `/api/v1/entries/filter`                        |    `GET`    | `Get transaction history and exported to pdf` |
+| `/api/v1/expenses-plan` |   `POST`    |            `Create expenses plan`             |
+
+### For more detail api documentation please import `apispec.json` in this repo to your Postman
 
