@@ -8,16 +8,16 @@ dropdb:
 	sudo docker exec -it postgres16 dropdb amikombri
 
 migratecreate:
-	migrate create -ext sql -dir db/postgres/migrations -seq $(name)
+	migrate create -ext sql -dir db/migrations -seq $(name)
 
 migrateup:
-	migrate -path db/postgres/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose up
+	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose up
 
 migratedown:
-	migrate -path db/postgres/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose down 1
+	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose down 1
 
 migratefix:
-	migrate -path db/postgres/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose force $(version)
+	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose force $(version)
 
 test:
 	go test -v -cover ./...
