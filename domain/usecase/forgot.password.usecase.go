@@ -103,6 +103,12 @@ func (f *forgotPasswordImpl) ForgotPasswordRequest(ctx context.Context, requestD
 		return err
 	}
 
+	err = tx.Commit().Error
+	if err != nil {
+		log.Printf("Failed commit db transaction : %+v", err)
+		return err
+	}
+
 	go func() {
 		resetLink := baseUrl + "/users/reset-password?secret=" + resetToken
 		subject, content, toEmail := mail.GetSenderParamResetPassword(emailUser.Email, resetLink)
@@ -111,11 +117,6 @@ func (f *forgotPasswordImpl) ForgotPasswordRequest(ctx context.Context, requestD
 			log.Printf("Failed send email : %+v", err)
 		}
 	}()
-
-	err = tx.Commit().Error
-	if err != nil {
-		return err
-	}
 
 	return nil
 }
