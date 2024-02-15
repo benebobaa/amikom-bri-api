@@ -9,7 +9,7 @@ type UserRegisterRequest struct {
 	FullName        string `json:"full_name" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 	Password        string `json:"password" validate:"required"`
-	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
+	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password,min=8,max=32"`
 	Pin             string `json:"pin" validate:"required,len=6,number"`
 }
 

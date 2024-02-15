@@ -164,39 +164,39 @@ func (t *transferUsecaseImpl) updateAccountBalance(
 	amount2 int64) error {
 
 	// Send notification emails to both sender and receiver
-	//if amount1 > amount2 {
-	//	go func() {
-	//		subject, content, toEmail := mail.GetReceiverParamTransferNotification(toUser, fromUser, amount1)
-	//		err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
-	//		if err != nil {
-	//			log.Printf("Failed send email : %+v", err)
-	//		}
-	//	}()
-	//
-	//	go func() {
-	//		subject, content, toEmail := mail.GetSenderParamTransferNotification(fromUser, amount1)
-	//		err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
-	//		if err != nil {
-	//			log.Printf("Failed send email : %+v", err)
-	//		}
-	//	}()
-	//} else {
-	//	go func() {
-	//		subject, content, toEmail := mail.GetReceiverParamTransferNotification(toUser, fromUser, amount2)
-	//		err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
-	//		if err != nil {
-	//			log.Printf("Failed send email : %+v", err)
-	//		}
-	//	}()
-	//
-	//	go func() {
-	//		subject, content, toEmail := mail.GetSenderParamTransferNotification(fromUser, amount2)
-	//		err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
-	//		if err != nil {
-	//			log.Printf("Failed send email : %+v", err)
-	//		}
-	//	}()
-	//}
+	if amount1 > amount2 {
+		go func() {
+			subject, content, toEmail := mail.GetReceiverParamTransferNotification(toUser, fromUser, amount1)
+			err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
+			if err != nil {
+				log.Printf("Failed send email : %+v", err)
+			}
+		}()
+
+		go func() {
+			subject, content, toEmail := mail.GetSenderParamTransferNotification(fromUser, amount1)
+			err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
+			if err != nil {
+				log.Printf("Failed send email : %+v", err)
+			}
+		}()
+	} else {
+		go func() {
+			subject, content, toEmail := mail.GetReceiverParamTransferNotification(toUser, fromUser, amount2)
+			err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
+			if err != nil {
+				log.Printf("Failed send email : %+v", err)
+			}
+		}()
+
+		go func() {
+			subject, content, toEmail := mail.GetSenderParamTransferNotification(fromUser, amount2)
+			err := t.TitanMail.SendEmail(subject, content, toEmail, []string{}, []string{}, []string{})
+			if err != nil {
+				log.Printf("Failed send email : %+v", err)
+			}
+		}()
+	}
 
 	err := t.AccountRepository.AddAccountBalance(tx, accountID1, amount1)
 	if err != nil {
