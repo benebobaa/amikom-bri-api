@@ -23,6 +23,7 @@ type UserUsecase interface {
 	DeleteUser(ctx context.Context, requestUsername, payloadUsername string) error
 	ProfileUser(ctx context.Context, userID string) (*response.UserProfileResponse, error)
 	GetAllUsers(ctx context.Context, requestData *request.SearchPaginationRequest) (*response.UserResponses, error)
+	UpdateUser(ctx context.Context, requestData *request.UserUpdateRequest, userID string) (*response.UserResponse, error)
 }
 
 type userUsecaseImpl struct {
@@ -301,4 +302,51 @@ func (u *userUsecaseImpl) GetAllUsers(ctx context.Context, requestData *request.
 	}
 
 	return entity.ToUserResponses(users, resultPaging), nil
+}
+
+func (u *userUsecaseImpl) UpdateUser(ctx context.Context, requestData *request.UserUpdateRequest, userID string) (*response.UserResponse, error) {
+	tx := u.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	err := u.Validate.Struct(requestData)
+	if err != nil {
+		log.Printf("Invalid request body : %+v", err)
+		return nil, err
+	}
+
+	// Check if email does not verified return err
+	user, err := u.UserRepository.FindByUserID(tx, userID)
+	if err != nil {
+		log.Printf("Failed find user by user id : %+v", err)
+		return nil, err
+	}
+
+	if !user.IsEmailVerified {
+		return nil, util.EmailNotVerified
+	}
+
+	// Check username already exists
+	_, exists, _ := u.UserRepository.FindUsernameIsExists(tx, requestData.Username)
+
+	if exists {
+		return nil, util.UsernameAlreadyExists
+	}
+
+	// Update user
+	requestUserEntity := requestData.ToEntity()
+	requestUserEntity.ID = user.ID
+	err = u.UserRepository.UpdateUser(tx, requestUserEntity)
+
+	if err != nil {
+		log.Printf("Failed update user : %+v", err)
+		return nil, err
+	}
+
+	err = tx.Commit().Error
+	if err != nil {
+		log.Printf("Failed commit db transaction : %+v", err)
+		return nil, err
+	}
+
+	return requestUserEntity.ToUserResponse(), nil
 }

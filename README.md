@@ -55,6 +55,8 @@ go run main.go
 ### Currently Published Example Endpoints
 ### Base URL: `https://go.amikompedia.xyz`
 
+Note: I kindly request you to use or try this API using a valid email, as the push send email feature can function properly.
+
 ## Auth
 | Endpoint                                 | HTTP Method |       Description        |
 |------------------------------------------|:-----------:|:------------------------:|

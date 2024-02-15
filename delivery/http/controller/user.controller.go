@@ -11,8 +11,7 @@ import (
 )
 
 type UserController interface {
-	Register(ctx *fiber.Ctx) error
-	Login(ctx *fiber.Ctx) error
+	Update(ctx *fiber.Ctx) error
 	Delete(ctx *fiber.Ctx) error
 	Profile(ctx *fiber.Ctx) error
 	FindAll(ctx *fiber.Ctx) error
@@ -21,21 +20,20 @@ type UserController interface {
 
 type userControllerImpl struct {
 	userUsecase           usecase.UserUsecase
-	loginUsecase          usecase.LoginUseCase
 	forgotPasswordUsecase usecase.ForgotPasswordUsecase
 }
 
-func NewUserController(userUsecase usecase.UserUsecase, useCase usecase.LoginUseCase, passwordUsecase usecase.ForgotPasswordUsecase) UserController {
+func NewUserController(userUsecase usecase.UserUsecase, passwordUsecase usecase.ForgotPasswordUsecase) UserController {
 	return &userControllerImpl{
 		userUsecase:           userUsecase,
-		loginUsecase:          useCase,
 		forgotPasswordUsecase: passwordUsecase,
 	}
 }
 
-func (u *userControllerImpl) Register(ctx *fiber.Ctx) error {
-	requestBody := new(request.UserRegisterRequest)
-	baseUrl := ctx.BaseURL()
+func (u *userControllerImpl) Update(ctx *fiber.Ctx) error {
+	requestBody := new(request.UserUpdateRequest)
+	authPayload := ctx.Locals(middleware.AuthorizationPayloadKey).(*token.Payload)
+
 	err := ctx.BodyParser(requestBody)
 
 	if err != nil {
@@ -48,9 +46,10 @@ func (u *userControllerImpl) Register(ctx *fiber.Ctx) error {
 		return ctx.Status(statusCode).JSON(resp)
 	}
 
-	result, err := u.userUsecase.RegisterNewUser(ctx.UserContext(), requestBody, baseUrl)
+	result, err := u.userUsecase.UpdateUser(ctx.UserContext(), requestBody, authPayload.UserID)
 
 	if err != nil {
+
 		if errors.Is(err, util.UsernameAlreadyExists) {
 			resp, statusCode := util.ConstructBaseResponse(
 				util.BaseResponse{
@@ -60,84 +59,7 @@ func (u *userControllerImpl) Register(ctx *fiber.Ctx) error {
 			)
 			return ctx.Status(statusCode).JSON(resp)
 		}
-		if errors.Is(err, util.EmailAlreadyExists) {
-			resp, statusCode := util.ConstructBaseResponse(
-				util.BaseResponse{
-					Code:   fiber.StatusBadRequest,
-					Status: err.Error(),
-				},
-			)
-			return ctx.Status(statusCode).JSON(resp)
 
-		} else {
-			resp, statusCode := util.ConstructBaseResponse(
-				util.BaseResponse{
-					Code:   fiber.StatusBadRequest,
-					Status: err.Error(),
-				},
-			)
-			return ctx.Status(statusCode).JSON(resp)
-		}
-	}
-
-	resp, statusCode := util.ConstructBaseResponse(
-		util.BaseResponse{
-			Code:   fiber.StatusCreated,
-			Status: "Success",
-			Data:   result,
-		},
-	)
-
-	return ctx.Status(statusCode).JSON(resp)
-}
-
-func (u *userControllerImpl) Login(ctx *fiber.Ctx) error {
-	requestBody := new(request.LoginRequest)
-	userAgent := ctx.Get("User-Agent")
-	clientIP := ctx.IP()
-
-	err := ctx.BodyParser(requestBody)
-
-	if err != nil {
-		resp, statusCode := util.ConstructBaseResponse(
-			util.BaseResponse{
-				Code:   fiber.StatusBadRequest,
-				Status: err.Error(),
-			},
-		)
-		return ctx.Status(statusCode).JSON(resp)
-	}
-
-	loginResult, err := u.loginUsecase.LoginUser(ctx.UserContext(), requestBody, userAgent, clientIP)
-
-	if err != nil {
-		if errors.Is(err, util.InvalidPassword) {
-			resp, statusCode := util.ConstructBaseResponse(
-				util.BaseResponse{
-					Code:   fiber.StatusUnauthorized,
-					Status: err.Error(),
-				},
-			)
-			return ctx.Status(statusCode).JSON(resp)
-		}
-		if errors.Is(err, util.UsernameOrEmailNotFound) {
-			resp, statusCode := util.ConstructBaseResponse(
-				util.BaseResponse{
-					Code:   fiber.StatusNotFound,
-					Status: err.Error(),
-				},
-			)
-			return ctx.Status(statusCode).JSON(resp)
-		}
-		if errors.Is(err, util.EmailNotVerified) {
-			resp, statusCode := util.ConstructBaseResponse(
-				util.BaseResponse{
-					Code:   fiber.StatusBadRequest,
-					Status: err.Error(),
-				},
-			)
-			return ctx.Status(statusCode).JSON(resp)
-		}
 		resp, statusCode := util.ConstructBaseResponse(
 			util.BaseResponse{
 				Code:   fiber.StatusBadRequest,
@@ -151,7 +73,7 @@ func (u *userControllerImpl) Login(ctx *fiber.Ctx) error {
 		util.BaseResponse{
 			Code:   fiber.StatusOK,
 			Status: "Success",
-			Data:   loginResult,
+			Data:   result,
 		},
 	)
 
