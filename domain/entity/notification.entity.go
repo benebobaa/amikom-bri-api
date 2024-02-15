@@ -2,6 +2,7 @@ package entity
 
 import (
 	"fmt"
+	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
 	"time"
 )
 
@@ -42,5 +43,16 @@ func GetNotificationOutEntity(userId string, amount int64) *Notification {
 		Title:       NotificationTitle,
 		Category:    NotificationCategoryOut,
 		Description: fmt.Sprintf("%s %d", NotificationDescOut, amount),
+	}
+}
+
+func (n *Notification) ToNotificationResponse() *response.NotificationResponse {
+	return &response.NotificationResponse{
+		ID:          fmt.Sprintf("%d", n.ID),
+		Title:       n.Title,
+		Description: n.Description,
+		Category:    n.Category,
+		CreatedAt:   n.CreatedAt,
+		UpdatedAt:   n.DeletedAt,
 	}
 }

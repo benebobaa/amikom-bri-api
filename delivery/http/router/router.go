@@ -6,13 +6,14 @@ import (
 )
 
 type RouteConfig struct {
-	App                *fiber.App
-	AuthMiddleware     fiber.Handler
-	UserController     controller.UserController
-	WebController      controller.WebController
-	TransferController controller.TransferController
-	EntryController    controller.EntryController
-	ExpensesController controller.ExpensesPlanController
+	App                    *fiber.App
+	AuthMiddleware         fiber.Handler
+	UserController         controller.UserController
+	WebController          controller.WebController
+	TransferController     controller.TransferController
+	EntryController        controller.EntryController
+	ExpensesController     controller.ExpensesPlanController
+	NotificationController controller.NotificationController
 }
 
 func (c *RouteConfig) Setup() {
@@ -62,4 +63,7 @@ func (c *RouteConfig) SetupAuthRoute() {
 	c.App.Get("/api/v1/expenses-plan", c.ExpensesController.FindAllFilter)
 	c.App.Patch("/api/v1/expenses-plan/:id", c.ExpensesController.Update)
 	c.App.Get("/api/v1/expenses-plan/export-pdf", c.ExpensesController.FindAllExportPdf)
+
+	// Notification
+	c.App.Get("/api/v1/notifications", c.NotificationController.FindALL)
 }

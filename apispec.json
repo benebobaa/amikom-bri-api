@@ -1,0 +1,1542 @@
+{
+	"info": {
+		"_postman_id": "7c530ecb-af66-4ede-897b-fac8a741eaa9",
+		"name": "API documentation Amikom BRI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22232631"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Verify Email (Manual)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/auth/_verify-email?secret=ajfiqofeew76079tkxdydxync3515",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"_verify-email"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": "ajfiqofeew76079tkxdydxync3515"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/auth/_verify-email?secret=mivqcbtdvg93599tkqbukujax65136",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"_verify-email"
+									],
+									"query": [
+										{
+											"key": "secret",
+											"value": "mivqcbtdvg93599tkqbukujax65136"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 12 Feb 2024 09:49:16 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "63"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 401,\n    \"status\": \"Email verify code not valid\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc3ZGM1ZjgyLTZiMzYtNGIyMy05ZTBlLWNlOWYwYTFiZDJhYiIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTM6MTQ6MTUuODY4MzI4NDg2KzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDE6MTQ6MTUuODY4MzI4ODUyKzA3OjAwIn0.VmRKgX-z-fA7NSVJ5Yy7eOxjF9cjOGSORBbvmeM_pzE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/users/amikom",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"amikom"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete Fail",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/users/beneboba25",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"beneboba25"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 12 Feb 2024 11:32:58 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "54"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 404,\n    \"status\": \"Username not found\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Profile User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2ZGYzY2QzLThlMTgtNDEyNi05YTQ2LTlhOTNiMWRkZjJhOCIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTU6NTE6NTAuODU4NDg4MTAyKzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDM6NTE6NTAuODU4NDg4NDkrMDc6MDAifQ.AmOCk0OwzSbD0BGgkHyGjOuzE0A_Oy4R-2dO_fRduNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/users/profile",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/users/profile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"profile"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 12 Feb 2024 12:12:19 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Content-Length",
+									"value": "156"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"status\": \"Success\",\n    \"data\": {\n        \"username\": \"beneboba25\",\n        \"full_name\": \"bene be\",\n        \"email\": \"beneboba5@gmail.com\",\n        \"is_email_verified\": true,\n        \"account\": {\n            \"id\": 1,\n            \"balance\": 0,\n            \"created_at\": \"2024-02-12T18:47:03.682518+07:00\",\n            \"updated_at\": \"2024-02-12T18:47:03.682518+07:00\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI5NGQ1MmU2LTE0MzgtNDNjNC1iNmNjLWZkODY5NDBhNjEzYSIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTNUMjE6MDU6MDkuNTcyNDA4MTYrMDc6MDAiLCJleHBpcmVkX2F0IjoiMjAyNC0wMi0xNFQwOTowNTowOS41NzI0MDg0NTErMDc6MDAifQ.B8yk3LVp9JHSK3t2jX-nF7P3Qa0Fred0ELfxo7Bdpms",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/users?page=1&size=10",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "bene",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "All Users Pagination",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/users?keyword=bene&page=1&size=10",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"users"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "bene"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 12 Feb 2024 13:26:00 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Content-Length",
+									"value": "268"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"status\": \"Success\",\n    \"data\": {\n        \"posts\": [\n            {\n                \"username\": \"beneboba25\",\n                \"full_name\": \"bene be\",\n                \"email\": \"beneboba5@gmail.com\",\n                \"is_email_verified\": true,\n                \"account\": {\n                    \"id\": 1,\n                    \"balance\": 0,\n                    \"created_at\": \"2024-02-12T18:47:03.682518+07:00\"\n                },\n                \"created_at\": \"2024-02-12T18:45:38.994722+07:00\"\n            },\n            {\n                \"username\": \"benebobi\",\n                \"full_name\": \"bene be\",\n                \"email\": \"beneboba5@gmail.com\",\n                \"is_email_verified\": true,\n                \"account\": {\n                    \"id\": 2,\n                    \"balance\": 0,\n                    \"created_at\": \"2024-02-12T19:50:31.770964+07:00\"\n                },\n                \"created_at\": \"2024-02-12T19:50:00.258+07:00\"\n            },\n            {\n                \"username\": \"benebobw\",\n                \"full_name\": \"bene be\",\n                \"email\": \"beneboba5@gmail.com\",\n                \"is_email_verified\": false,\n                \"account\": {\n                    \"id\": 0,\n                    \"balance\": 0,\n                    \"created_at\": \"0001-01-01T00:00:00Z\"\n                },\n                \"created_at\": \"2024-02-12T20:10:40.758871+07:00\"\n            }\n        ],\n        \"paging\": {\n            \"page\": 1,\n            \"size\": 10,\n            \"total_item\": 3,\n            \"total_page\": 1\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"amikompedia\",\n    \"email\":\"benediktus@students.amikom.ac.id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/auth/_forgot-password",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"_forgot-password"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Forgot Password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"beneb\",\n    \"email\":\"masaremaja11@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/auth/_forgot-password",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"_forgot-password"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 03:37:33 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "64"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 400,\n    \"status\": \"Username and email not match\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Reset Password (Manual)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"new_password\": \"\",\n    \"confirm_password\":\"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deployedUrl}}/users/reset-password-submit?secret",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"users",
+								"reset-password-submit"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": null,
+									"description": "reset token"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2ZGYzY2QzLThlMTgtNDEyNi05YTQ2LTlhOTNiMWRkZjJhOCIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTU6NTE6NTAuODU4NDg4MTAyKzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDM6NTE6NTAuODU4NDg4NDkrMDc6MDAifQ.AmOCk0OwzSbD0BGgkHyGjOuzE0A_Oy4R-2dO_fRduNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"\",\n    \"full_name\":\"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/users",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"beneboba\",\n    \"full_name\":\"Neira Bene\",\n    \"email\": \"benediktus@students.amikom.ac.id\",\n    \"password\":\"apaiya\",\n    \"confirm_password\": \"apaiya\",\n    \"pin\":\"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/auth/_register",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"_register"
+							]
+						},
+						"description": "Gets information about the authenticated user."
+					},
+					"response": [
+						{
+							"name": "Email already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\":\"beneboba\",\n    \"full_name\":\"bene be\",\n    \"email\": \"bene@gmail.com\",\n    \"password\":\"apaiya\",\n    \"confirm_password\": \"apaiya\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/auth/_register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"_register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 12 Feb 2024 08:48:26 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "59"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 400,\n    \"status\": \"Username already exists\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username_or_email\": \"beneboba\",\n    \"password\":\"apaiya\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/auth/_login",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"_login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Email Not Verif",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username_or_email\": \"benebob\",\n    \"password\":\"awadw\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/auth/_login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"_login"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 12 Feb 2024 08:47:21 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "63"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 404,\n    \"status\": \"Username or Email not found\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Renew Access Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\":\"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/auth/_renew-token",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"_renew-token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transfer",
+			"item": [
+				{
+					"name": "Transfer Money",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc3ZGM1ZjgyLTZiMzYtNGIyMy05ZTBlLWNlOWYwYTFiZDJhYiIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTM6MTQ6MTUuODY4MzI4NDg2KzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDE6MTQ6MTUuODY4MzI4ODUyKzA3OjAwIn0.VmRKgX-z-fA7NSVJ5Yy7eOxjF9cjOGSORBbvmeM_pzE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from_account_id\" : 2,\n    \"to_account_id\": 3,\n    \"amount\": 20,\n    \"pin\":\"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/transfer",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transfer"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Transfer Money",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from_account_id\" : 5,\n    \"to_account_id\": 2,\n    \"amount\": 5,\n    \"pin\":\"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/transfer",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"transfer"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 11:59:37 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "52"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"status\": \"Transfer success\",\n    \"data\": null\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Transaction History",
+			"item": [
+				{
+					"name": "History Transaction Filter Date",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2ZGYzY2QzLThlMTgtNDEyNi05YTQ2LTlhOTNiMWRkZjJhOCIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTU6NTE6NTAuODU4NDg4MTAyKzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDM6NTE6NTAuODU4NDg4NDkrMDc6MDAifQ.AmOCk0OwzSbD0BGgkHyGjOuzE0A_Oy4R-2dO_fRduNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/entries/filter?filter=yearly&date=2024&export_pdf=true",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"entries",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "yearly",
+									"description": "param: yearly / monthly / daily"
+								},
+								{
+									"key": "date",
+									"value": "2024",
+									"description": "format 2024 / 2024-02 / 2024-02-13"
+								},
+								{
+									"key": "export_pdf",
+									"value": "true",
+									"description": "json = false / pdf = true"
+								},
+								{
+									"key": "entry_type",
+									"value": "OUT",
+									"description": "param: IN / OUT",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "History Transaction Filter Date",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/entries/filter?filter=yearly&date=2024",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"entries",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "yearly",
+											"description": "param: yearly / monthly / daily"
+										},
+										{
+											"key": "date",
+											"value": "2024",
+											"description": "format 2024 / 2024-02 / 2024-02-13"
+										},
+										{
+											"key": "export_pdf",
+											"value": "false",
+											"description": "json = false / pdf = true",
+											"disabled": true
+										},
+										{
+											"key": "entry_type",
+											"value": "OUT",
+											"description": "param: IN / OUT",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 14 Feb 2024 07:00:29 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Content-Length",
+									"value": "305"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"status\": \"Success\",\n    \"data\": {\n        \"entries\": [\n            {\n                \"id\": 5,\n                \"account_id\": 2,\n                \"date\": \"2024-02-13 00:00:00 +0000 UTC\",\n                \"amount\": -15,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-13T21:52:31.627629+07:00\"\n            },\n            {\n                \"id\": 10,\n                \"account_id\": 2,\n                \"date\": \"2024-02-13 00:00:00 +0000 UTC\",\n                \"amount\": 200,\n                \"entry_type\": \"IN\",\n                \"created_at\": \"2024-02-13T21:53:45.87845+07:00\"\n            },\n            {\n                \"id\": 2,\n                \"account_id\": 2,\n                \"date\": \"2024-02-14 00:00:00 +0000 UTC\",\n                \"amount\": 15,\n                \"entry_type\": \"IN\",\n                \"created_at\": \"2024-02-13T21:01:13.311543+07:00\"\n            },\n            {\n                \"id\": 3,\n                \"account_id\": 2,\n                \"date\": \"2024-02-14 00:00:00 +0000 UTC\",\n                \"amount\": -15,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-13T21:52:27.711438+07:00\"\n            },\n            {\n                \"id\": 7,\n                \"account_id\": 2,\n                \"date\": \"2024-01-13 00:00:00 +0000 UTC\",\n                \"amount\": -10,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-13T21:52:34.98644+07:00\"\n            },\n            {\n                \"id\": 16,\n                \"account_id\": 2,\n                \"date\": \"2024-01-01 00:00:00 +0000 UTC\",\n                \"amount\": 50,\n                \"entry_type\": \"IN\",\n                \"created_at\": \"2024-02-13T21:53:57.677714+07:00\"\n            },\n            {\n                \"id\": 17,\n                \"account_id\": 2,\n                \"date\": \"2024-02-14 00:00:00 +0000 UTC\",\n                \"amount\": -20,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-14T13:15:54.926946+07:00\"\n            },\n            {\n                \"id\": 19,\n                \"account_id\": 2,\n                \"date\": \"2024-02-14 00:00:00 +0000 UTC\",\n                \"amount\": -20,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-14T13:15:56.363887+07:00\"\n            },\n            {\n                \"id\": 21,\n                \"account_id\": 2,\n                \"date\": \"2024-02-14 00:00:00 +0000 UTC\",\n                \"amount\": -50,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-14T13:16:01.989685+07:00\"\n            }\n        ],\n        \"paging\": {\n            \"page\": 1,\n            \"size\": 10,\n            \"total_item\": 19,\n            \"total_page\": 2\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "All History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc3ZGM1ZjgyLTZiMzYtNGIyMy05ZTBlLWNlOWYwYTFiZDJhYiIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTM6MTQ6MTUuODY4MzI4NDg2KzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDE6MTQ6MTUuODY4MzI4ODUyKzA3OjAwIn0.VmRKgX-z-fA7NSVJ5Yy7eOxjF9cjOGSORBbvmeM_pzE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/entries?entry_type=OUT&page&size",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"entries"
+							],
+							"query": [
+								{
+									"key": "entry_type",
+									"value": "OUT"
+								},
+								{
+									"key": "page",
+									"value": null
+								},
+								{
+									"key": "size",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "All History",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/entries?entry_type=OUT&page&size",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"entries"
+									],
+									"query": [
+										{
+											"key": "entry_type",
+											"value": "OUT"
+										},
+										{
+											"key": "page",
+											"value": null
+										},
+										{
+											"key": "size",
+											"value": null
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 14 Feb 2024 07:01:03 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Content-Length",
+									"value": "248"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"status\": \"Success\",\n    \"data\": {\n        \"entries\": [\n            {\n                \"id\": 5,\n                \"account_id\": 2,\n                \"date\": \"2024-02-13 00:00:00 +0000 UTC\",\n                \"amount\": -15,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-13T21:52:31.627629+07:00\"\n            },\n            {\n                \"id\": 3,\n                \"account_id\": 2,\n                \"date\": \"2024-02-14 00:00:00 +0000 UTC\",\n                \"amount\": -15,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-13T21:52:27.711438+07:00\"\n            },\n            {\n                \"id\": 7,\n                \"account_id\": 2,\n                \"date\": \"2024-01-13 00:00:00 +0000 UTC\",\n                \"amount\": -10,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-13T21:52:34.98644+07:00\"\n            },\n            {\n                \"id\": 17,\n                \"account_id\": 2,\n                \"date\": \"2024-02-14 00:00:00 +0000 UTC\",\n                \"amount\": -20,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-14T13:15:54.926946+07:00\"\n            },\n            {\n                \"id\": 19,\n                \"account_id\": 2,\n                \"date\": \"2024-02-14 00:00:00 +0000 UTC\",\n                \"amount\": -20,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-14T13:15:56.363887+07:00\"\n            },\n            {\n                \"id\": 21,\n                \"account_id\": 2,\n                \"date\": \"2024-02-14 00:00:00 +0000 UTC\",\n                \"amount\": -50,\n                \"entry_type\": \"OUT\",\n                \"created_at\": \"2024-02-14T13:16:01.989685+07:00\"\n            }\n        ],\n        \"paging\": {\n            \"page\": 1,\n            \"size\": 10,\n            \"total_item\": 11,\n            \"total_page\": 2\n        }\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Expenses Plan",
+			"item": [
+				{
+					"name": "Create Expenses Plan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2ZGYzY2QzLThlMTgtNDEyNi05YTQ2LTlhOTNiMWRkZjJhOCIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTU6NTE6NTAuODU4NDg4MTAyKzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDM6NTE6NTAuODU4NDg4NDkrMDc6MDAifQ.AmOCk0OwzSbD0BGgkHyGjOuzE0A_Oy4R-2dO_fRduNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Kopi\",\n    \"description\": \"Beli kopi di boboho coffee\",\n    \"amount\": 50,\n    \"date\":\"2024-03-15\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/expenses-plan",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"expenses-plan"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Kopi\",\n    \"description\": \"Beli kopi di boboho coffee\",\n    \"amount\": 50,\n    \"date\":\"2024-03-15\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/expenses-plan",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"expenses-plan"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 14 Feb 2024 11:36:42 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Content-Length",
+									"value": "121"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"title\": \"Kopi\",\n    \"description\": \"Beli kopi di boboho coffee\",\n    \"amount\": 50,\n    \"date\": \"2024-03-15\",\n    \"created_at\": \"2024-02-14T18:36:42.868774369+07:00\",\n    \"updated_at\": \"2024-02-14T18:36:42.868774369+07:00\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Plan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2ZGYzY2QzLThlMTgtNDEyNi05YTQ2LTlhOTNiMWRkZjJhOCIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTU6NTE6NTAuODU4NDg4MTAyKzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDM6NTE6NTAuODU4NDg4NDkrMDc6MDAifQ.AmOCk0OwzSbD0BGgkHyGjOuzE0A_Oy4R-2dO_fRduNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/expenses-plan/5",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"expenses-plan",
+								"5"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/expenses-plan/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"expenses-plan",
+										"5"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 14 Feb 2024 11:38:25 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "59"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 400,\n    \"status\": \"Expenses plan not found\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "All Expense Plans",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2ZGYzY2QzLThlMTgtNDEyNi05YTQ2LTlhOTNiMWRkZjJhOCIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTU6NTE6NTAuODU4NDg4MTAyKzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDM6NTE6NTAuODU4NDg4NDkrMDc6MDAifQ.AmOCk0OwzSbD0BGgkHyGjOuzE0A_Oy4R-2dO_fRduNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/expenses-plan",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"expenses-plan"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "a",
+									"description": "param for search (case sensitive)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/expenses-plan?keyword=Ko",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"expenses-plan"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "Ko",
+											"description": "param for search (case sensitive)"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 14 Feb 2024 12:00:47 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Content-Length",
+									"value": "206"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"status\": \"Success\",\n    \"data\": {\n        \"expenses_plans\": [\n            {\n                \"id\": 6,\n                \"title\": \"Kopi\",\n                \"description\": \"Beli kopi di boboho coffee\",\n                \"amount\": 50,\n                \"date\": \"2024-03-15T00:00:00Z\",\n                \"created_at\": \"2024-02-14T18:36:41.390788+07:00\",\n                \"updated_at\": \"2024-02-14T18:36:41.390788+07:00\"\n            },\n            {\n                \"id\": 8,\n                \"title\": \"Kopi\",\n                \"description\": \"Beli kopi di boboho coffee\",\n                \"amount\": 50,\n                \"date\": \"2024-03-15T00:00:00Z\",\n                \"created_at\": \"2024-02-14T18:57:09.25688+07:00\",\n                \"updated_at\": \"2024-02-14T18:57:09.25688+07:00\"\n            }\n        ],\n        \"paging\": {\n            \"page\": 1,\n            \"size\": 10,\n            \"total_item\": 2,\n            \"total_page\": 1\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2ZGYzY2QzLThlMTgtNDEyNi05YTQ2LTlhOTNiMWRkZjJhOCIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTU6NTE6NTAuODU4NDg4MTAyKzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDM6NTE6NTAuODU4NDg4NDkrMDc6MDAifQ.AmOCk0OwzSbD0BGgkHyGjOuzE0A_Oy4R-2dO_fRduNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\":\"caw\",\n    \"description\":\"testing\",\n    \"amount\":10,\n    \"date\":\"2024-03-12\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/expenses-plan/10",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"expenses-plan",
+								"10"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\":\"caw\",\n    \"date\":\"2024-03-12\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/expenses-plan/10",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"expenses-plan",
+										"10"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 14 Feb 2024 12:28:43 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Content-Length",
+									"value": "162"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"status\": \"Success\",\n    \"data\": {\n        \"id\": 10,\n        \"title\": \"caw\",\n        \"description\": \"Beli kopi di boboho coffee\",\n        \"amount\": 50,\n        \"date\": \"2024-03-12T00:00:00Z\",\n        \"created_at\": \"2024-02-14T18:57:26.167646+07:00\",\n        \"updated_at\": \"2024-02-14T19:28:43.598861+07:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Export Expenses PDF",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2ZGYzY2QzLThlMTgtNDEyNi05YTQ2LTlhOTNiMWRkZjJhOCIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTU6NTE6NTAuODU4NDg4MTAyKzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDM6NTE6NTAuODU4NDg4NDkrMDc6MDAifQ.AmOCk0OwzSbD0BGgkHyGjOuzE0A_Oy4R-2dO_fRduNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/expenses-plan/export-pdf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"expenses-plan",
+								"export-pdf"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "All History Notif",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2ZGYzY2QzLThlMTgtNDEyNi05YTQ2LTlhOTNiMWRkZjJhOCIsInVzZXJuYW1lIjoiYW1pa29tIiwidXNlcl9pZCI6ImY3NTIzMzQxLWM1MTMtNDU5MS1hZDY4LWQyYjRhMzIyOTNhYyIsImlzc3VlZF9hdCI6IjIwMjQtMDItMTRUMTU6NTE6NTAuODU4NDg4MTAyKzA3OjAwIiwiZXhwaXJlZF9hdCI6IjIwMjQtMDItMTVUMDM6NTE6NTAuODU4NDg4NDkrMDc6MDAifQ.AmOCk0OwzSbD0BGgkHyGjOuzE0A_Oy4R-2dO_fRduNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deployedUrl}}/api/v1/notifications",
+							"host": [
+								"{{deployedUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"notifications"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/notifications",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 14 Feb 2024 19:12:25 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "41"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"status\": \"Success\",\n    \"data\": []\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "X-API-Key",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://farming-simulator.pstmn.io"
+		},
+		{
+			"key": "deployedUrl",
+			"value": "https://go.amikompedia.xyz"
+		},
+		{
+			"key": "localUrl",
+			"value": "http://localhost:8080"
+		}
+	]
+}

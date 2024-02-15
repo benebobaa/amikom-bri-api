@@ -6,6 +6,6 @@ type ForgotPasswordRequest struct {
 }
 
 type ResetPasswordRequest struct {
-	NewPassword     string `json:"new_password" validate:"required"`
-	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=NewPassword""`
+	NewPassword     string `json:"new_password" validate:"required,min=8,max=32"`
+	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=NewPassword,min=8,max=32"`
 }
