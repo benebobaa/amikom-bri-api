@@ -57,6 +57,15 @@ go run main.go
 
 Note: I kindly request you to use or try this API using a valid email, as the push send email feature can function properly.
 
+- Or you can use this user, only these account has provided sample data
+
+| Email                   |  Password   | PIN     |
+|-------------------------|:-----------:|:--------|
+| `manaada@gmail.com`     | `apaiya123` | `123456` |
+| `bensatriya3@gmail.com` | `apaiya123` |      `123456`   |
+
+
+
 ## Auth
 | Endpoint                                 | HTTP Method |       Description        |
 |------------------------------------------|:-----------:|:------------------------:|
