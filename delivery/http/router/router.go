@@ -14,6 +14,7 @@ type RouteConfig struct {
 	EntryController        controller.EntryController
 	ExpensesController     controller.ExpensesPlanController
 	NotificationController controller.NotificationController
+	AuthController         controller.AuthController
 }
 
 func (c *RouteConfig) Setup() {
@@ -24,10 +25,10 @@ func (c *RouteConfig) Setup() {
 func (c *RouteConfig) SetupGuestRoute() {
 
 	// Register
-	c.App.Post("/api/v1/auth/_register", c.UserController.Register)
+	c.App.Post("/api/v1/auth/_register", c.AuthController.Register)
 
 	// Login
-	c.App.Post("/api/v1/auth/_login", c.UserController.Login)
+	c.App.Post("/api/v1/auth/_login", c.AuthController.Login)
 
 	// Verify Email
 	c.App.Get("/api/v1/auth/_verify-email", c.WebController.VerifyEmail)
@@ -39,7 +40,9 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Post("/users/reset-password-submit", c.WebController.ResetPasswordSubmit)
 
 	c.App.Get("/users/reset-password-success", c.WebController.ResetPasswordSuccess)
-	//c.App.Get("/_test", c.WebController.Test)
+
+	// Renew Access Token
+	c.App.Post("/api/v1/auth/_renew-token", c.AuthController.RenewAccessToken)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {
@@ -49,6 +52,7 @@ func (c *RouteConfig) SetupAuthRoute() {
 	c.App.Delete("/api/v1/users/:username", c.UserController.Delete)
 	c.App.Get("/api/v1/users/profile", c.UserController.Profile)
 	c.App.Get("/api/v1/users", c.UserController.FindAll)
+	c.App.Patch("/api/v1/users", c.UserController.Update)
 
 	// Transfer
 	c.App.Post("/api/v1/transfer", c.TransferController.Transfer)

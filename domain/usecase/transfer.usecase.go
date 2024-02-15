@@ -8,6 +8,7 @@ import (
 	"github.com/benebobaa/amikom-bri-api/domain/repository"
 	"github.com/benebobaa/amikom-bri-api/util"
 	"github.com/benebobaa/amikom-bri-api/util/mail"
+	"github.com/benebobaa/amikom-bri-api/util/onesignal"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 	"log"
@@ -18,23 +19,27 @@ type TransferUsecase interface {
 }
 
 type transferUsecaseImpl struct {
-	DB                 *gorm.DB
-	Validate           *validator.Validate
-	TitanMail          mail.EmailSender
-	TransferRepository repository.TransferRepository
-	AccountRepository  repository.AccountRepository
-	EntryRepository    repository.EntryRepository
+	DB                     *gorm.DB
+	Validate               *validator.Validate
+	Onesignal              *onesignal.OneSignal
+	TitanMail              mail.EmailSender
+	TransferRepository     repository.TransferRepository
+	AccountRepository      repository.AccountRepository
+	EntryRepository        repository.EntryRepository
+	NotificationRepository repository.NotificationRepository
 }
 
-func NewTransferUsecase(db *gorm.DB, validate *validator.Validate, titanMail mail.EmailSender, transferRepository repository.TransferRepository,
-	accountRepository repository.AccountRepository, entryRepository repository.EntryRepository) TransferUsecase {
+func NewTransferUsecase(db *gorm.DB, validate *validator.Validate, signal *onesignal.OneSignal, titanMail mail.EmailSender, transferRepository repository.TransferRepository,
+	accountRepository repository.AccountRepository, entryRepository repository.EntryRepository, notificationRepository repository.NotificationRepository) TransferUsecase {
 	return &transferUsecaseImpl{
-		DB:                 db,
-		Validate:           validate,
-		TitanMail:          titanMail,
-		TransferRepository: transferRepository,
-		AccountRepository:  accountRepository,
-		EntryRepository:    entryRepository,
+		DB:                     db,
+		Validate:               validate,
+		Onesignal:              signal,
+		TitanMail:              titanMail,
+		TransferRepository:     transferRepository,
+		AccountRepository:      accountRepository,
+		EntryRepository:        entryRepository,
+		NotificationRepository: notificationRepository,
 	}
 }
 
@@ -124,19 +129,34 @@ func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *re
 		return nil, err
 	}
 
-	// Updates balance account
+	// Updates balance account and send notification, onesignal and email
 	if requestData.FromAccountID < requestData.ToAccountID {
 		err = t.updateAccountBalance(tx, account.User.Email, toAccount.User.Email, requestData.FromAccountID, -requestData.Amount, requestData.ToAccountID, requestData.Amount)
 		if err != nil {
 			log.Printf("Error when update balance : %+v", err)
 			return nil, err
 		}
+		// Send push notif onsignal
+		err = t.createAndSendNotification(tx, account.User.ID, toAccount.User.ID, requestData.Amount, requestData.Amount)
+		if err != nil {
+			log.Printf("Error when create notification : %+v", err)
+			return nil, err
+		}
+
 	} else {
 		err = t.updateAccountBalance(tx, account.User.Email, toAccount.User.Email, requestData.ToAccountID, requestData.Amount, requestData.FromAccountID, -requestData.Amount)
 		if err != nil {
 			log.Printf("Error when update balance : %+v", err)
 			return nil, err
 		}
+
+		// Send push notif onsignal
+		err = t.createAndSendNotification(tx, account.User.ID, toAccount.User.ID, requestData.Amount, requestData.Amount)
+		if err != nil {
+			log.Printf("Error when create notification : %+v", err)
+			return nil, err
+		}
+
 	}
 
 	err = tx.Commit().Error
@@ -209,5 +229,53 @@ func (t *transferUsecaseImpl) updateAccountBalance(
 		log.Printf("Error when add account2 balance : %+v", err)
 		return err
 	}
+	return nil
+}
+
+func (t *transferUsecaseImpl) createAndSendNotification(tx *gorm.DB, fromId, toId string, amount1, amount2 int64) error {
+
+	if amount1 > amount2 {
+		tfInEntity := entity.GetNotificationInEntity(toId, amount1)
+
+		err := t.NotificationRepository.NotificationCreate(tx, tfInEntity)
+		if err != nil {
+			log.Printf("Error when create tf in notification : %+v", err)
+			return err
+		}
+
+		tfOutEntity := entity.GetNotificationOutEntity(fromId, amount2)
+
+		err = t.NotificationRepository.NotificationCreate(tx, tfOutEntity)
+		if err != nil {
+			log.Printf("Error when create tf out notification : %+v", err)
+			return err
+		}
+
+		go func() {
+			t.Onesignal.SendNotification(tfInEntity.Title, tfInEntity.Description)
+			t.Onesignal.SendNotification(tfOutEntity.Title, tfOutEntity.Description)
+		}()
+	} else {
+		tfInEntity := entity.GetNotificationInEntity(toId, amount2)
+
+		err := t.NotificationRepository.NotificationCreate(tx, tfInEntity)
+		if err != nil {
+			log.Printf("Error when create tf in notification : %+v", err)
+			return err
+		}
+
+		tfOutEntity := entity.GetNotificationOutEntity(fromId, amount1)
+
+		err = t.NotificationRepository.NotificationCreate(tx, tfOutEntity)
+		if err != nil {
+			log.Printf("Error when create tf out notification : %+v", err)
+			return err
+		}
+		go func() {
+			t.Onesignal.SendNotification(tfInEntity.Title, tfInEntity.Description)
+			t.Onesignal.SendNotification(tfOutEntity.Title, tfOutEntity.Description)
+		}()
+	}
+
 	return nil
 }

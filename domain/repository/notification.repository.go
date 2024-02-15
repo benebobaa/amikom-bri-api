@@ -33,7 +33,7 @@ func (n *notificationRepositoryImpl) NotificationCreate(tx *gorm.DB, value *enti
 
 func (n *notificationRepositoryImpl) FindAllNotif(tx *gorm.DB, userId string) ([]entity.Notification, error) {
 	var notif []entity.Notification
-	result := tx.Find(&notif)
+	result := tx.Where("user_id = ?", userId).Find(&notif)
 
 	if result.Error != nil {
 		log.Println(fmt.Sprintf("Error when find all notification : %v", result.Error))

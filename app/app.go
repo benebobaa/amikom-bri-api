@@ -8,6 +8,7 @@ import (
 	"github.com/benebobaa/amikom-bri-api/domain/usecase"
 	"github.com/benebobaa/amikom-bri-api/util"
 	"github.com/benebobaa/amikom-bri-api/util/mail"
+	"github.com/benebobaa/amikom-bri-api/util/onesignal"
 	"github.com/benebobaa/amikom-bri-api/util/token"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -19,6 +20,7 @@ type BootstrapConfig struct {
 	App         *fiber.App
 	Validate    *validator.Validate
 	GoPdf       *util.PDFGenerator
+	Onesignal   *onesignal.OneSignal
 	TokenMaker  token.Maker
 	ViperConfig util.Config
 	TitanMail   mail.EmailSender
@@ -42,18 +44,20 @@ func Bootstrap(config *BootstrapConfig) {
 	userUsecase := usecase.NewUserUsecase(config.DB, config.Validate, config.TitanMail, userRepository, emailRepository, accountRepository)
 	loginUsecase := usecase.NewLoginUseCase(config.DB, config.Validate, config.TokenMaker, config.ViperConfig, userRepository, sessionRepository)
 	fPasswordUsecase := usecase.NewForgotPasswordUsecase(config.DB, config.Validate, config.ViperConfig, config.TokenMaker, config.TitanMail, userRepository, fPasswordRepository)
-	transferUsecase := usecase.NewTransferUsecase(config.DB, config.Validate, config.TitanMail, transferRepository, accountRepository, entryRepository)
+	transferUsecase := usecase.NewTransferUsecase(config.DB, config.Validate, config.Onesignal, config.TitanMail, transferRepository, accountRepository, entryRepository, notificationRepository)
 	entryUsecase := usecase.NewEntryUsecase(config.DB, config.GoPdf, entryRepository, accountRepository)
 	expensesPlanUsecase := usecase.NewExpensesPlanUsecase(config.DB, config.Validate, config.GoPdf, expensesPlanRepository)
 	notificationUsecase := usecase.NewNotificationUsecase(config.DB, notificationRepository)
+	sessionUsecase := usecase.NewSessionUseCase(config.DB, config.Validate, config.TokenMaker, config.ViperConfig, sessionRepository)
 
 	// Setup controller
-	userController := controller.NewUserController(userUsecase, loginUsecase, fPasswordUsecase)
+	userController := controller.NewUserController(userUsecase, fPasswordUsecase)
 	webController := controller.NewWebController(userUsecase, fPasswordUsecase)
 	transferController := controller.NewTransferController(transferUsecase)
 	entryController := controller.NewEntryController(entryUsecase)
 	expensesPlanController := controller.NewExpensesPlanController(expensesPlanUsecase)
 	notificationController := controller.NewNotificationController(notificationUsecase)
+	authControler := controller.NewAuthController(userUsecase, loginUsecase, sessionUsecase)
 
 	// Setup middleware
 	authMiddleware := middleware.AuthMiddleware(config.TokenMaker, config.ViperConfig)
@@ -67,6 +71,7 @@ func Bootstrap(config *BootstrapConfig) {
 		EntryController:        entryController,
 		ExpensesController:     expensesPlanController,
 		NotificationController: notificationController,
+		AuthController:         authControler,
 	}
 
 	routeConfig.Setup()

@@ -83,7 +83,7 @@ func (u *userRepositoryImpl) FindByUsernameOrEmail(tx *gorm.DB, value *entity.Us
 }
 
 func (u *userRepositoryImpl) UpdateUser(tx *gorm.DB, value *entity.User) error {
-	result := tx.Model(value).Where("id = ?", value.ID).Updates(value).First(value)
+	result := tx.Model(value).Where("id = ?", value.ID).Updates(value).Preload("Account").First(value)
 
 	if result.Error != nil {
 		log.Println(fmt.Sprintf("Error when update user : %v", result.Error))
