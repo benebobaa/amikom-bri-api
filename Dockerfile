@@ -17,6 +17,8 @@ COPY  app.env .
 COPY  start.sh .
 COPY  wait-for.sh .
 COPY  db/migrations ./migrations
+COPY public/expenses_plans ./public/expenses_plans
+COPY public/transaction_pdf ./public/transaction_pdf
 
 
 EXPOSE 8080
