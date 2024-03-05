@@ -9,17 +9,18 @@ import (
 	"github.com/benebobaa/amikom-bri-api/domain/repository"
 	"github.com/benebobaa/amikom-bri-api/util"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 	"math"
 )
 
 type ExpensesPlanUsecase interface {
-	ExpensesPlanCreate(ctx context.Context, requestData *request.ExpensesPlanRequest, userId string) (*response.ExpensesPlanResponse, error)
-	DeletePlan(ctx context.Context, id int64, userId string) error
-	UpdatePlan(ctx context.Context, requestData *request.ExpensesPlanUpdateRequest, id int64, userId string) (*response.ExpensesPlanResponse, error)
-	FindAllFilter(ctx context.Context, requestData *request.SearchPaginationRequest, userID string) (*response.ExpensesPlanResponses, error)
-	ExpensesPlanExportPdf(ctx context.Context, userId string) (string, error)
+	ExpensesPlanCreate(ctx context.Context, requestData *request.ExpensesPlanRequest, userId uuid.UUID) (*response.ExpensesPlanResponse, error)
+	DeletePlan(ctx context.Context, id int64, userId uuid.UUID) error
+	UpdatePlan(ctx context.Context, requestData *request.ExpensesPlanUpdateRequest, id int64, userId uuid.UUID) (*response.ExpensesPlanResponse, error)
+	FindAllFilter(ctx context.Context, requestData *request.SearchPaginationRequest, userID uuid.UUID) (*response.ExpensesPlanResponses, error)
+	ExpensesPlanExportPdf(ctx context.Context, userId uuid.UUID) (string, error)
 }
 
 type expensesPlanUsecaseImpl struct {
@@ -38,7 +39,7 @@ func NewExpensesPlanUsecase(db *gorm.DB, validate *validator.Validate, goPdf *ut
 	}
 }
 
-func (e *expensesPlanUsecaseImpl) ExpensesPlanCreate(ctx context.Context, requestData *request.ExpensesPlanRequest, userId string) (*response.ExpensesPlanResponse, error) {
+func (e *expensesPlanUsecaseImpl) ExpensesPlanCreate(ctx context.Context, requestData *request.ExpensesPlanRequest, userId uuid.UUID) (*response.ExpensesPlanResponse, error) {
 	tx := e.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -66,7 +67,7 @@ func (e *expensesPlanUsecaseImpl) ExpensesPlanCreate(ctx context.Context, reques
 
 }
 
-func (e *expensesPlanUsecaseImpl) DeletePlan(ctx context.Context, id int64, userId string) error {
+func (e *expensesPlanUsecaseImpl) DeletePlan(ctx context.Context, id int64, userId uuid.UUID) error {
 	tx := e.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -107,7 +108,7 @@ func (e *expensesPlanUsecaseImpl) DeletePlan(ctx context.Context, id int64, user
 	return nil
 }
 
-func (e *expensesPlanUsecaseImpl) UpdatePlan(ctx context.Context, requestData *request.ExpensesPlanUpdateRequest, id int64, userId string) (*response.ExpensesPlanResponse, error) {
+func (e *expensesPlanUsecaseImpl) UpdatePlan(ctx context.Context, requestData *request.ExpensesPlanUpdateRequest, id int64, userId uuid.UUID) (*response.ExpensesPlanResponse, error) {
 	tx := e.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -152,7 +153,7 @@ func (e *expensesPlanUsecaseImpl) UpdatePlan(ctx context.Context, requestData *r
 	return expensesPlanEntity.ToExpensesResponse(), nil
 }
 
-func (e *expensesPlanUsecaseImpl) FindAllFilter(ctx context.Context, requestData *request.SearchPaginationRequest, userID string) (*response.ExpensesPlanResponses, error) {
+func (e *expensesPlanUsecaseImpl) FindAllFilter(ctx context.Context, requestData *request.SearchPaginationRequest, userID uuid.UUID) (*response.ExpensesPlanResponses, error) {
 	tx := e.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -180,7 +181,7 @@ func (e *expensesPlanUsecaseImpl) FindAllFilter(ctx context.Context, requestData
 	return entity.ToExpensesResponses(expensePlans, resultPaging), nil
 }
 
-func (e *expensesPlanUsecaseImpl) ExpensesPlanExportPdf(ctx context.Context, userId string) (string, error) {
+func (e *expensesPlanUsecaseImpl) ExpensesPlanExportPdf(ctx context.Context, userId uuid.UUID) (string, error) {
 	tx := e.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 

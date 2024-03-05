@@ -2,13 +2,14 @@ package entity
 
 import (
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
 )
 
 type ExpensesPlan struct {
 	ID          int64          `gorm:"column:id"`
-	UserID      string         `gorm:"column:user_id"`
+	UserID      uuid.UUID      `gorm:"column:user_id"`
 	Title       string         `gorm:"title"`
 	Description string         `gorm:"description"`
 	Amount      int64          `gorm:"amount"`

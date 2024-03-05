@@ -10,12 +10,13 @@ import (
 	"github.com/benebobaa/amikom-bri-api/util/mail"
 	"github.com/benebobaa/amikom-bri-api/util/onesignal"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 )
 
 type TransferUsecase interface {
-	TransferMoney(ctx context.Context, requestData *request.TransferRequest, userID string) (*response.TransferResponse, error)
+	TransferMoney(ctx context.Context, requestData *request.TransferRequest, userID uuid.UUID) (*response.TransferResponse, error)
 }
 
 type transferUsecaseImpl struct {
@@ -43,7 +44,7 @@ func NewTransferUsecase(db *gorm.DB, validate *validator.Validate, signal *onesi
 	}
 }
 
-func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *request.TransferRequest, userID string) (*response.TransferResponse, error) {
+func (t *transferUsecaseImpl) TransferMoney(ctx context.Context, requestData *request.TransferRequest, userID uuid.UUID) (*response.TransferResponse, error) {
 	tx := t.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -232,7 +233,7 @@ func (t *transferUsecaseImpl) updateAccountBalance(
 	return nil
 }
 
-func (t *transferUsecaseImpl) createAndSendNotification(tx *gorm.DB, fromId, toId string, amount1, amount2 int64) error {
+func (t *transferUsecaseImpl) createAndSendNotification(tx *gorm.DB, fromId, toId uuid.UUID, amount1, amount2 int64) error {
 
 	if amount1 > amount2 {
 		tfInEntity := entity.GetNotificationInEntity(toId, amount1)

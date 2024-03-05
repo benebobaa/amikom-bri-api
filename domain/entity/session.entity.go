@@ -1,13 +1,14 @@
 package entity
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
 )
 
 type Session struct {
 	ID           string         `gorm:"column:id;primaryKey;"`
-	UserID       string         `gorm:"column:user_id;not null"`
+	UserID       uuid.UUID      `gorm:"column:user_id;not null"`
 	RefreshToken string         `gorm:"column:refresh_token;not null"`
 	UserAgent    string         `gorm:"column:user_agent;not null"`
 	ClientIP     string         `gorm:"column:client_ip;not null"`

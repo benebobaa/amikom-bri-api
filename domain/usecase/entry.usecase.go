@@ -7,6 +7,7 @@ import (
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
 	"github.com/benebobaa/amikom-bri-api/domain/repository"
 	"github.com/benebobaa/amikom-bri-api/util"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 	"math"
@@ -15,9 +16,9 @@ import (
 )
 
 type EntryUsecase interface {
-	FindAllHistoryTransfer(ctx context.Context, requestData *request.SearchPaginationRequest, userID string) (*response.EntryResponses, error)
-	DeleteEntry(ctx context.Context, entryID int64, userID string) error
-	FindAllFilterDate(ctx context.Context, requestData *request.SearchPaginationRequest, userID string) (*response.EntryResponses, string, error)
+	FindAllHistoryTransfer(ctx context.Context, requestData *request.SearchPaginationRequest, userID uuid.UUID) (*response.EntryResponses, error)
+	DeleteEntry(ctx context.Context, entryID int64, userID uuid.UUID) error
+	FindAllFilterDate(ctx context.Context, requestData *request.SearchPaginationRequest, userID uuid.UUID) (*response.EntryResponses, string, error)
 }
 
 type entryUsecaseImpl struct {
@@ -36,7 +37,7 @@ func NewEntryUsecase(db *gorm.DB, pdf *util.PDFGenerator, entryRepository reposi
 	}
 }
 
-func (e *entryUsecaseImpl) FindAllHistoryTransfer(ctx context.Context, requestData *request.SearchPaginationRequest, userID string) (*response.EntryResponses, error) {
+func (e *entryUsecaseImpl) FindAllHistoryTransfer(ctx context.Context, requestData *request.SearchPaginationRequest, userID uuid.UUID) (*response.EntryResponses, error) {
 
 	tx := e.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
@@ -72,11 +73,11 @@ func (e *entryUsecaseImpl) FindAllHistoryTransfer(ctx context.Context, requestDa
 	return entity.ToEntryResponses(entries, resultPaging), nil
 }
 
-func (e *entryUsecaseImpl) DeleteEntry(ctx context.Context, entryID int64, userID string) error {
+func (e *entryUsecaseImpl) DeleteEntry(ctx context.Context, entryID int64, userID uuid.UUID) error {
 	return nil
 }
 
-func (e *entryUsecaseImpl) FindAllFilterDate(ctx context.Context, requestData *request.SearchPaginationRequest, userID string) (*response.EntryResponses, string, error) {
+func (e *entryUsecaseImpl) FindAllFilterDate(ctx context.Context, requestData *request.SearchPaginationRequest, userID uuid.UUID) (*response.EntryResponses, string, error) {
 	tx := e.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 

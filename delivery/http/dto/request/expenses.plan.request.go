@@ -2,6 +2,7 @@ package request
 
 import (
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
+	"github.com/google/uuid"
 )
 
 type ExpensesPlanRequest struct {
@@ -18,7 +19,7 @@ type ExpensesPlanUpdateRequest struct {
 	Date        string `json:"date" validate:"datetime=2006-01-02"`
 }
 
-func (e *ExpensesPlanRequest) ToEntity(userId string) *entity.ExpensesPlan {
+func (e *ExpensesPlanRequest) ToEntity(userId uuid.UUID) *entity.ExpensesPlan {
 	return &entity.ExpensesPlan{
 		UserID:      userId,
 		Title:       e.Title,
@@ -28,7 +29,7 @@ func (e *ExpensesPlanRequest) ToEntity(userId string) *entity.ExpensesPlan {
 	}
 }
 
-func (e *ExpensesPlanUpdateRequest) ToEntity(userId string) *entity.ExpensesPlan {
+func (e *ExpensesPlanUpdateRequest) ToEntity(userId uuid.UUID) *entity.ExpensesPlan {
 	return &entity.ExpensesPlan{
 		Title:       e.Title,
 		UserID:      userId,

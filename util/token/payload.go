@@ -14,14 +14,14 @@ var (
 type Payload struct {
 	ID        uuid.UUID `json:"id"`
 	Username  string    `json:"username"`
-	UserID    string    `json:"user_id"`
+	UserID    uuid.UUID `json:"user_id"`
 	IssuedAt  time.Time `json:"issued_at"`
 	ExpiredAt time.Time `json:"expired_at"`
 }
 
 type UserPayload struct {
-	UserID   string `json:"uuiuser_idd"`
-	Username string `json:"username"`
+	UserID   uuid.UUID `json:"uuiuser_idd"`
+	Username string    `json:"username"`
 }
 
 func NewPayload(userPayload UserPayload, duration time.Duration) (*Payload, error) {

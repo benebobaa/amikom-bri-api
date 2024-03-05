@@ -3,6 +3,7 @@ package entity
 import (
 	"fmt"
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -16,7 +17,7 @@ var (
 
 type Notification struct {
 	ID          int64     `gorm:"column:id"`
-	UserID      string    `gorm:"column:user_id"`
+	UserID      uuid.UUID `gorm:"column:user_id"`
 	Title       string    `gorm:"title"`
 	Description string    `gorm:"description"`
 	Category    string    `gorm:"category"`
@@ -28,7 +29,7 @@ func (n *Notification) TableName() string {
 	return "notifications"
 }
 
-func GetNotificationInEntity(userId string, amount int64) *Notification {
+func GetNotificationInEntity(userId uuid.UUID, amount int64) *Notification {
 	return &Notification{
 		UserID:      userId,
 		Title:       NotificationTitle,
@@ -37,7 +38,7 @@ func GetNotificationInEntity(userId string, amount int64) *Notification {
 	}
 }
 
-func GetNotificationOutEntity(userId string, amount int64) *Notification {
+func GetNotificationOutEntity(userId uuid.UUID, amount int64) *Notification {
 	return &Notification{
 		UserID:      userId,
 		Title:       NotificationTitle,

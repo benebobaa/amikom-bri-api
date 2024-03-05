@@ -3,13 +3,14 @@ package repository
 import (
 	"fmt"
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 )
 
 type ForgotPasswordRepository interface {
 	ForgotPasswordCreate(tx *gorm.DB, value *entity.ForgotPassword) error
-	FindByUserID(tx *gorm.DB, userID string) (*entity.ForgotPassword, error)
+	FindByUserID(tx *gorm.DB, userID uuid.UUID) (*entity.ForgotPassword, error)
 	UpdateForgotPassword(tx *gorm.DB, value *entity.ForgotPassword) error
 }
 
@@ -31,7 +32,7 @@ func (f *forgotPasswordRepositoryImpl) ForgotPasswordCreate(tx *gorm.DB, value *
 	return nil
 }
 
-func (f *forgotPasswordRepositoryImpl) FindByUserID(tx *gorm.DB, userID string) (*entity.ForgotPassword, error) {
+func (f *forgotPasswordRepositoryImpl) FindByUserID(tx *gorm.DB, userID uuid.UUID) (*entity.ForgotPassword, error) {
 	var forgotPassword entity.ForgotPassword
 	result := tx.Where("user_id = ?", userID).Order("id DESC").First(&forgotPassword)
 

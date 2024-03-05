@@ -2,13 +2,14 @@ package entity
 
 import (
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
 )
 
 type Email struct {
 	ID         int            `gorm:"column:id;primaryKey;autoIncrement;not null" `
-	UserID     string         `gorm:"column:user_id;not null"`
+	UserID     uuid.UUID      `gorm:"column:user_id;not null"`
 	Email      string         `gorm:"column:email;not null"`
 	SecretCode string         `gorm:"column:secret_code;not null"`
 	IsUsed     bool           `gorm:"column:is_used;not null;default:false"`

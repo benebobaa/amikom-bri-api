@@ -2,11 +2,12 @@ package request
 
 import (
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
+	"github.com/google/uuid"
 	"time"
 )
 
 type EmailRequest struct {
-	UserID     string    `json:"user_id" validate:"required"`
+	UserID     uuid.UUID `json:"user_id" validate:"required"`
 	Username   string    `json:"username" validate:"required"`
 	Email      string    `json:"email" validate:"required,email"`
 	SecretCode string    `json:"secret_code" validate:"required"`

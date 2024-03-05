@@ -2,12 +2,13 @@ package request
 
 import (
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
+	"github.com/google/uuid"
 	"time"
 )
 
 type SessionRequest struct {
 	ID           string    `json:"id"`
-	UserID       string    `json:"user_id"`
+	UserID       uuid.UUID `json:"user_id"`
 	Username     string    `json:"username"`
 	RefreshToken string    `json:"refresh_token"`
 	UserAgent    string    `json:"user_agent"`

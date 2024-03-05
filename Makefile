@@ -19,6 +19,19 @@ migratedown:
 migratefix:
 	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/amikombri?sslmode=disable" -verbose force $(version)
 
+migratecreatess:
+	migrate create -ext sql -dir db/sqlserver -seq $(name)
+
+migrateupss:
+	migrate -path db/sqlserver -database "sqlserver://sa:Secret1!@localhost:1433?database=amikombri" -verbose up
+
+migratedownss:
+	migrate -path db/sqlserver -database "sqlserver://sa:Secret1!@localhost:1433?database=amikombri" -verbose down 1
+
+migratefixss:
+	migrate -path db/sqlserver -database "sqlserver://sa:Secret1!@localhost:1433?database=amikombri" -verbose force $(version)
+
+
 test:
 	go test -v -cover ./...
 

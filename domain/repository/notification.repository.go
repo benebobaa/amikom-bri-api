@@ -3,13 +3,14 @@ package repository
 import (
 	"fmt"
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 )
 
 type NotificationRepository interface {
 	NotificationCreate(tx *gorm.DB, value *entity.Notification) error
-	FindAllNotif(tx *gorm.DB, userId string) ([]entity.Notification, error)
+	FindAllNotif(tx *gorm.DB, userId uuid.UUID) ([]entity.Notification, error)
 }
 
 type notificationRepositoryImpl struct {
@@ -31,7 +32,7 @@ func (n *notificationRepositoryImpl) NotificationCreate(tx *gorm.DB, value *enti
 
 }
 
-func (n *notificationRepositoryImpl) FindAllNotif(tx *gorm.DB, userId string) ([]entity.Notification, error) {
+func (n *notificationRepositoryImpl) FindAllNotif(tx *gorm.DB, userId uuid.UUID) ([]entity.Notification, error) {
 	var notif []entity.Notification
 	result := tx.Where("user_id = ?", userId).Find(&notif)
 

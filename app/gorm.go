@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/gofiber/fiber/v2/log"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"time"
@@ -10,9 +10,15 @@ import (
 
 func NewDatabaseConnection(dsn string) *gorm.DB {
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	/// SqlServer
+	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
+
+	/// Postgres
+	//db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	//	Logger: logger.Default.LogMode(logger.Info),
+	//})
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -2,12 +2,13 @@ package entity
 
 import (
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/response"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
 )
 
 type User struct {
-	ID              string         `gorm:"column:id;primaryKey;type:uuid;default:uuid_generate_v4()"`
+	ID              uuid.UUID      `gorm:"column:id;primaryKey;type:uuid;default:uuid_generate_v4()"`
 	Username        string         `gorm:"column:username;"`
 	Email           string         `gorm:"column:email"`
 	FullName        string         `gorm:"column:full_name"`

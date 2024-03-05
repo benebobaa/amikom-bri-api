@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/request"
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 )
@@ -15,7 +16,7 @@ type UserRepository interface {
 	FindByUsernameOrEmail(tx *gorm.DB, value *entity.User) (*entity.User, error)
 	UpdateUser(tx *gorm.DB, value *entity.User) error
 	DeleteUser(tx *gorm.DB, value *entity.User) error
-	FindByUserID(tx *gorm.DB, userID string) (*entity.User, error)
+	FindByUserID(tx *gorm.DB, userID uuid.UUID) (*entity.User, error)
 	FindAllUsers(db *gorm.DB, request *request.SearchPaginationRequest) ([]entity.User, int64, error)
 	FilterUser(request *request.SearchPaginationRequest) func(tx *gorm.DB) *gorm.DB
 }
@@ -104,7 +105,7 @@ func (u *userRepositoryImpl) DeleteUser(tx *gorm.DB, value *entity.User) error {
 	return nil
 }
 
-func (u *userRepositoryImpl) FindByUserID(tx *gorm.DB, userID string) (*entity.User, error) {
+func (u *userRepositoryImpl) FindByUserID(tx *gorm.DB, userID uuid.UUID) (*entity.User, error) {
 	var user entity.User
 
 	result := tx.Preload("Account").Where("id = ?", userID).First(&user)

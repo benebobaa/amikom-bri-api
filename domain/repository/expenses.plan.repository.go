@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/benebobaa/amikom-bri-api/delivery/http/dto/request"
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 )
@@ -13,8 +14,8 @@ type ExpensesPlanRepository interface {
 	FindByID(tx *gorm.DB, value *entity.ExpensesPlan) error
 	Delete(tx *gorm.DB, value *entity.ExpensesPlan) error
 	Update(tx *gorm.DB, value *entity.ExpensesPlan) error
-	FindAlL(tx *gorm.DB, userId string) ([]entity.ExpensesPlan, error)
-	FindAllWithFilter(tx *gorm.DB, request *request.SearchPaginationRequest, userId string) ([]entity.ExpensesPlan, int64, error)
+	FindAlL(tx *gorm.DB, userId uuid.UUID) ([]entity.ExpensesPlan, error)
+	FindAllWithFilter(tx *gorm.DB, request *request.SearchPaginationRequest, userId uuid.UUID) ([]entity.ExpensesPlan, int64, error)
 	FilterExpenses(request *request.SearchPaginationRequest) func(tx *gorm.DB) *gorm.DB
 }
 
@@ -71,7 +72,7 @@ func (e *expensesPlanRepositoryImpl) Update(tx *gorm.DB, value *entity.ExpensesP
 	return nil
 }
 
-func (e *expensesPlanRepositoryImpl) FindAlL(tx *gorm.DB, userId string) ([]entity.ExpensesPlan, error) {
+func (e *expensesPlanRepositoryImpl) FindAlL(tx *gorm.DB, userId uuid.UUID) ([]entity.ExpensesPlan, error) {
 	var expenses []entity.ExpensesPlan
 
 	result := tx.Where("user_id = ?", userId).Find(&expenses)
@@ -84,7 +85,7 @@ func (e *expensesPlanRepositoryImpl) FindAlL(tx *gorm.DB, userId string) ([]enti
 	return expenses, nil
 }
 
-func (e *expensesPlanRepositoryImpl) FindAllWithFilter(db *gorm.DB, request *request.SearchPaginationRequest, userId string) ([]entity.ExpensesPlan, int64, error) {
+func (e *expensesPlanRepositoryImpl) FindAllWithFilter(db *gorm.DB, request *request.SearchPaginationRequest, userId uuid.UUID) ([]entity.ExpensesPlan, int64, error) {
 	var expenses []entity.ExpensesPlan
 
 	if err := db.Scopes(e.FilterExpenses(request)).Offset((request.Page-1)*request.Size).Limit(request.Size).Where("user_id", userId).Find(&expenses).Error; err != nil {

@@ -11,6 +11,7 @@ import (
 	"github.com/benebobaa/amikom-bri-api/util/mail"
 	"github.com/benebobaa/amikom-bri-api/util/token"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 	"math"
@@ -21,9 +22,9 @@ type UserUsecase interface {
 	RegisterNewUser(ctx context.Context, requestData *request.UserRegisterRequest, baseUrl string) (*response.UserResponse, error)
 	VerifyUserEmail(ctx context.Context, secretCode string) (*response.EmailVerifyResponse, error)
 	DeleteUser(ctx context.Context, requestUsername, payloadUsername string) error
-	ProfileUser(ctx context.Context, userID string) (*response.UserProfileResponse, error)
+	ProfileUser(ctx context.Context, userID uuid.UUID) (*response.UserProfileResponse, error)
 	GetAllUsers(ctx context.Context, requestData *request.SearchPaginationRequest) (*response.UserResponses, error)
-	UpdateUser(ctx context.Context, requestData *request.UserUpdateRequest, userID string) (*response.UserResponse, error)
+	UpdateUser(ctx context.Context, requestData *request.UserUpdateRequest, userID uuid.UUID) (*response.UserResponse, error)
 }
 
 type userUsecaseImpl struct {
@@ -252,7 +253,7 @@ func (u *userUsecaseImpl) DeleteUser(ctx context.Context, requestUsername, paylo
 	return nil
 }
 
-func (u *userUsecaseImpl) ProfileUser(ctx context.Context, userID string) (*response.UserProfileResponse, error) {
+func (u *userUsecaseImpl) ProfileUser(ctx context.Context, userID uuid.UUID) (*response.UserProfileResponse, error) {
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -304,7 +305,7 @@ func (u *userUsecaseImpl) GetAllUsers(ctx context.Context, requestData *request.
 	return entity.ToUserResponses(users, resultPaging), nil
 }
 
-func (u *userUsecaseImpl) UpdateUser(ctx context.Context, requestData *request.UserUpdateRequest, userID string) (*response.UserResponse, error) {
+func (u *userUsecaseImpl) UpdateUser(ctx context.Context, requestData *request.UserUpdateRequest, userID uuid.UUID) (*response.UserResponse, error) {
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 

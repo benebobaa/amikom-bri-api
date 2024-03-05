@@ -3,13 +3,14 @@ package repository
 import (
 	"fmt"
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 )
 
 type AccountRepository interface {
 	AccountCreate(tx *gorm.DB, value *entity.Account) error
-	FindByUserID(tx *gorm.DB, userID string) (*entity.Account, bool, error)
+	FindByUserID(tx *gorm.DB, userID uuid.UUID) (*entity.Account, bool, error)
 	FindByID(tx *gorm.DB, id int64) (*entity.Account, error)
 	AddAccountBalance(tx *gorm.DB, accountID int64, amount int64) error
 	DeleteAccount(tx *gorm.DB, value *entity.Account) error
@@ -33,7 +34,7 @@ func (a *accountRepositoryImpl) AccountCreate(tx *gorm.DB, value *entity.Account
 	return nil
 }
 
-func (a *accountRepositoryImpl) FindByUserID(tx *gorm.DB, userID string) (*entity.Account, bool, error) {
+func (a *accountRepositoryImpl) FindByUserID(tx *gorm.DB, userID uuid.UUID) (*entity.Account, bool, error) {
 	var account entity.Account
 
 	result := tx.Where("user_id = ?", userID).First(&account)

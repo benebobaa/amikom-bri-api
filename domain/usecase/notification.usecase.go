@@ -4,11 +4,12 @@ import (
 	"context"
 	"github.com/benebobaa/amikom-bri-api/domain/entity"
 	"github.com/benebobaa/amikom-bri-api/domain/repository"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type NotificationUsecase interface {
-	GetAllNotifHistory(ctx context.Context, userId string) ([]entity.Notification, error)
+	GetAllNotifHistory(ctx context.Context, userId uuid.UUID) ([]entity.Notification, error)
 }
 
 type notificationUsecaseImpl struct {
@@ -23,7 +24,7 @@ func NewNotificationUsecase(db *gorm.DB, notificationRepository repository.Notif
 	}
 }
 
-func (n *notificationUsecaseImpl) GetAllNotifHistory(ctx context.Context, userId string) ([]entity.Notification, error) {
+func (n *notificationUsecaseImpl) GetAllNotifHistory(ctx context.Context, userId uuid.UUID) ([]entity.Notification, error) {
 	tx := n.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
